@@ -1,0 +1,48 @@
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - 'db/**/*'
+    - 'config/*.rb'
+    - 'bin/*'
+    - '*.gemspec'
+    - 'config.ru'
+    - 'spec/spec_helper.rb'
+
+# Dumb rubocop is dumb
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 25
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/ModuleLength:
+  Max: 150
+
+Metrics/BlockLength:
+  Max: 550
+
+Metrics/MethodLength:
+  Max: 15

@@ -1,0 +1,233 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ */
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import 'bootstrap';
+@import 'font-awesome';
+
+html, body, div, span, applet, object, iframe, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+  font-family: '-apple-system', 'system-ui', 'Open Sans', sans-serif;
+}
+
+html {
+}
+
+h1, h2, h3, h4 {
+  font-family: '-apple-system', 'system-ui', 'Open Sans', 'Trebuchet MS', sans-serif;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #A1C9D5, #FEEABE);
+}
+
+
+body {
+  color: #fff;
+  margin: 0;
+  background-color: transparent;
+}
+
+.header {
+  width: 100%;
+  color: #EEE;
+  background-color: #1B566A;
+  padding: 16px 64px;
+  box-shadow: 0 1px 1px #FEDE97;
+
+  a {
+    color: #EEE;
+  }
+
+  .text-muted {
+    color: #CCC !important;
+  }
+}
+
+.no-overflow {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.pretty-btn {
+  font-family: brown,-apple-system,BlinkMacSystemFont,avenir,lucida grande,gill sans,helvetica neue,helvetica,sans-serif;
+  margin: 20px;
+  padding: 12px 28px;
+  border-radius: 5px;
+  border: 1px solid #FEDE97;
+  color: white;
+  background: #2E6C80;
+  display: inline-block;
+  margin-bottom: 0;
+  font-family: "Open Sans","Trebuchet MS",sans-serif;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .025em;
+  word-spacing: .05em;
+  vertical-align: middle;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+
+  &:hover {
+    border: 1px solid #FEDE97;
+    background: #6CA1B2;
+    transition: background 0.1s;
+    color: white;
+    text-decoration: none;
+    -ms-transform: translate(1px, -2px); /* IE 9 */
+    -webkit-transform: translate(1px, -2px); /* Safari */
+    transform: translate(1px, -2px);
+  }
+
+  &.secondary {
+    color: #111;
+    background: white;
+    border: 1px solid #1B566A;
+
+    &:hover {
+      border: 1px dotted #1B566A;
+      color: #222;
+      background: white;
+    }
+  }
+}
+
+.nav-btn {
+  font-family: brown,-apple-system,BlinkMacSystemFont,avenir,lucida grande,gill sans,helvetica neue,helvetica,sans-serif;
+  border-radius: 5px;
+  border: 1px solid #FEDE97;
+  color: #2E6C80;
+  background: #FEDE97;
+  display: inline-block;
+  font-family: "Open Sans","Trebuchet MS",sans-serif;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .025em;
+  word-spacing: .05em;
+  vertical-align: middle;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  font-size: small;
+  padding: 4px 16px 4px 16px;
+
+  &:hover {
+    color: #6CA1B2;
+  }
+}
+
+.dropdown-menu {
+  background-color: #42424D;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+
+  .dropdown-item {
+    &:active, &:hover {
+      color: #20212D;
+      background-color: white;
+      border-top: 1px solid #FEC16B;
+      border-bottom: 1px solid #FEC16B;
+    }
+  }
+}
+
+.dropdown-divider {
+  border-top: 2px dotted #FD6663;
+}
+
+.pretty-link {
+  color: #628be4;
+  letter-spacing: -.02rem;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.main {
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  font-size: large;
+  min-height: 768px;
+
+  .container {
+    padding: 8px 0;
+
+    &.devise {
+      margin: 64px auto;
+      max-width: 400px;
+    }
+  }
+}
+
+.ph-address {
+  font-size: smaller;
+}
+
+.panel {
+  text-align: left;
+  padding: 2rem;
+  margin: 2rem;
+  width: 80%;
+  background: #fff;
+  border-radius: 4px;
+  color: #585858;
+  display: block;
+  background: #fff;
+  border-radius: 4px;
+  color: #585858;
+  -webkit-box-shadow: 0 7px 15px rgba(40,40,40,.2);
+  box-shadow: 0 7px 15px rgba(40,40,40,.2);
+}
+
+.blank {
+  display: block;
+  text-align: center;
+  margin: 20px;
+  color: gray;
+}
+
+input {
+  padding: 3px 8px;
+  border: 1px solid gray;
+  border-radius: 2px;
+}
+
+.btn-primary {
+  background-color: #DEF1E5;
+  border-color: #DEF1E5;
+}
+
+.modal-header {
+  color: #111;
+}
+.modal-body {
+  color: #111;
+}

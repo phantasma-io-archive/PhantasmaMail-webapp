@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="utf-8">
+    <title>Phantasma</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= favicon_link_tag 'favicon.ico', type: 'image/ico' %>
+
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Geo" rel="stylesheet">
+  </head>
+
+  <body>
+		<div class="header">
+			<div class="row">
+				<div class="col-md-6 text-left">
+					<a href="<%= root_url %>" style="font-family: 'Geo',sans-serif; font-size: larger">
+            <img src="http://phantasma.io/img/phantasma_logo_vector.png" width="32" style="margin-right: 10px" />PHANTASMA PROTOCOL</a>
+				</div>
+
+        <% if controller_name == 'main' %>
+          <div class="col-md-6 text-right" id='nav-menu' style="display: none;">
+            <div class="btn-group">
+              <button type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= action_name == 'subs' ? 'Subscribers' : (action_name == 'wallet' ? 'Payments' : action_name) %>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="<%= inbox_url %>">Inbox</a>
+                <a class="dropdown-item" href="<%= wallet_url %>">Payments</a>
+                <a class="dropdown-item" href="<%= files_url %>">Files</a>
+                <a class="dropdown-item" href="<%= subs_url %>">Subscribers</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">NEO Address</a>
+                <a class="dropdown-item" href="#">Forget me</a>
+              </div>
+            </div>
+
+            <div class="btn-group" style="margin-left: 8px">
+              <button type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                demo@phantasma.io
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">demo2@phantasma.io</a>
+                <a class="dropdown-item" href="#">demo3@phantasma.io</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Add Mailbox</a>
+              </div>
+            </div>
+  				</div>
+        <% end %>
+			</div>
+		</div>
+
+		<div class="main">
+      <div class="container">
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+
+var elem = document.getElementById('nav-menu');
+if (elem && typeof(Storage) !== "undefined") {
+  elem.style.display = 'block';
+}
+</script>

@@ -1,0 +1,22 @@
+<script>
+if (typeof(Storage) === "undefined") {
+  window.location = 'no_local_storage';
+}
+
+var datesDiff = function(date1, date2) {
+  var diff = date2.getTime() - date1.getTime();
+  return Math.ceil(diff / (1000 * 3600 * 24));
+};
+
+var lastVisit = localStorage.getItem("lastVisit");
+if (!lastVisit || datesDiff(new Date(lastVisit), new Date()) > 7) {
+  localStorage.setItem("lastVisit", undefined);
+  localStorage.setItem("disclaimerConfirm", undefined);
+}
+
+if (localStorage.getItem("disclaimerConfirm") !== '1') {
+  window.location = '<%= disclaimer_url %>';
+} else {
+  localStorage.setItem("lastVisit", new Date().toISOString());
+}
+</script>

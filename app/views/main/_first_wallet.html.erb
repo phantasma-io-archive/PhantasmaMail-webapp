@@ -1,0 +1,42 @@
+<script>
+if (PH.wallets.length === 0) {
+  addWallet = function(event) {
+    var walletPrivKey = document.getElementById('wallet_priv_key').value;
+    var walletEmail = document.getElementById('wallet_email').value;
+
+    if (PH.addWallet(walletEmail, walletPrivKey)) {
+      window.location = '<%= inbox_url %>';
+    }
+  }
+}
+</script>
+
+<div class="modal fade" id="firstWallet" tabindex="-1" role="dialog" aria-labelledby="firstWalletLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="firstWalletLabel">First Phantasma wallet</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="wallet_priv_key" class="control-label">Private key (hex-format, 32 bytes)</label>
+          <input type="password" required class="form-control select2-offscreen" id="wallet_priv_key" name="wallet_priv_key" placeholder="Private key" />
+        </div>
+
+        <div class="form-group">
+          <label for="wallet_email" class="control-label">Email</label>
+          <input type="email" required class="form-control" id="wallet_email" name="wallet_email" placeholder="Email" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="addWallet(event)" class="btn pretty-btn">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+if (PH.wallets.length === 0) {
+  $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
+}
+</script>
