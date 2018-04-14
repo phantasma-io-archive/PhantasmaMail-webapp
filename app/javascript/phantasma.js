@@ -1,6 +1,36 @@
 var $ = require("jquery");
 neonJs = require('@cityofzion/neon-js');
 
+// Update this data from Phantasma
+var dummyInboxInitialData = [
+  {
+    date: Date.now(),
+    message: 'Lorem ipsum',
+    sender: Math.random().toString(16).substring(2)
+  },
+  {
+    date: Date.now(),
+    message: 'Lorem ipsum 2',
+    sender: Math.random().toString(16).substring(2)
+  },
+  {
+    date: Date.now(),
+    message: 'Lorem ipsum 3',
+    sender: Math.random().toString(16).substring(2)
+  },
+  {
+    date: Date.now(),
+    message: 'Lorem ipsum 4',
+    sender: Math.random().toString(16).substring(2)
+  }
+];
+
+PH_ITEMS_PER_PAGE = 50;
+
+window.timestampToDateString = function(timestamp) {
+  return new Date(timestamp).toISOString().replace('T', ' ').substring(0, 19);
+}
+
 window.PH = {
   mainWallet: -1,
   wallets: [],
@@ -36,6 +66,12 @@ window.PH = {
     PH.saveWallets();
 
     PH.loaded = true;
+  },
+
+  inboxPane: {
+    page: 0,
+    pages: Math.max(Math.floor((dummyInboxInitialData.length + PH_ITEMS_PER_PAGE - 1) / PH_ITEMS_PER_PAGE), 1),
+    items: dummyInboxInitialData
   }
 };
 

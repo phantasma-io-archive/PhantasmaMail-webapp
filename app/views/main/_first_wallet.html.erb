@@ -36,7 +36,14 @@ if (PH.wallets.length === 0) {
 </div>
 
 <script>
-if (PH.wallets.length === 0) {
+document.getElementById('add-mailbox').addEventListener('click', function(elem) {
+  elem.preventDefault();
+
+  $('#firstWallet').modal();
+});
+
+// TODO: remove "false &&" after testing
+if (false && PH.wallets.length === 0) {
   $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
 }
 </script>

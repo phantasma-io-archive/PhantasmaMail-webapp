@@ -144,6 +144,80 @@ body {
   }
 }
 
+.pane {
+  margin-top: 1rem;
+
+  .pane-item {
+    border-bottom: 2px solid #ddd;
+    padding: 0.5rem;
+
+    .sender-and-date {
+      font-size: smaller;
+    }
+  }
+}
+
+.dropdown {
+  display: inline-block;
+}
+
+.dropdown-menu {
+  background-color: #42424D;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+
+  .dropdown-item {
+    &:active, &:hover {
+      color: #20212D;
+      background-color: white;
+      border-top: 1px solid #FEC16B;
+      border-bottom: 1px solid #FEC16B;
+    }
+  }
+
+  &.light {
+    background-color: white;
+    color: #20212D;
+    border: 1px solid #1F5669;
+    border-radius: 3px;
+
+    .dropdown-item {
+      border: 0 !important;
+      border-left: 2px solid white !important;
+
+      &:active, &:hover {
+        border-left: 2px solid #ABCDD3 !important;
+        color: #1F5669 !important;
+      }
+    }
+  }
+}
+
+.action-btn {
+  font-family: brown,-apple-system,BlinkMacSystemFont,avenir,lucida grande,gill sans,helvetica neue,helvetica,sans-serif;
+  border-radius: 5px;
+  border: 1px solid #2E6C80;
+  color: #2E6C80;
+  background: transparent;
+  display: inline-block;
+  font-family: "Open Sans","Trebuchet MS",sans-serif;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  letter-spacing: .025em;
+  word-spacing: .05em;
+  vertical-align: middle;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  font-size: small;
+  padding: 4px 16px 4px 16px;
+
+  &:hover {
+    color: #6CA1B2;
+  }
+}
+
 .dropdown-menu {
   background-color: #42424D;
   border-top: 1px solid transparent;
