@@ -6,7 +6,7 @@
     <div class="clearfix">
       <div class="pull-left">
         <div class="dropdown">
-          <button class="btn action-btn dropdown-toggle" type="button" id="mailSelectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <button class="inbox-nav-item btn action-btn dropdown-toggle" type="button" id="mailSelectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             None
           </button>
           <ul class="dropdown-menu light" aria-labelledby="mailSelectionDropdown">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="dropdown">
-          <button class="btn action-btn dropdown-toggle" type="button" id="mailPaneDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <button class="inbox-nav-item btn action-btn dropdown-toggle" type="button" id="mailPaneDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             Received
           </button>
           <ul class="dropdown-menu light" aria-labelledby="mailPaneDropdown">
@@ -27,6 +27,8 @@
             <a class="dropdown-item" href="#">Drafts</a>
           </ul>
         </div>
+
+        <a href="#" class="inbox-nav-item" id="refreshMailbox"><i class="fa fa-refresh"></i></a>
       </div>
 
       <div class="pull-right text-muted" id="paneNavigation">
@@ -46,7 +48,18 @@
 </center>
 
 <script>
-  var elem = document.getElementById('pageNavBack');
+  var elem = document.getElementById('refreshMailbox');
+  elem.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    PH.fetchInbox(function() {
+      PH.inboxPane.page = 0;
+
+      inboxPaneUpdate();
+    });
+  });
+
+  elem = document.getElementById('pageNavBack');
   elem.addEventListener('click', function(event) {
     event.preventDefault();
 

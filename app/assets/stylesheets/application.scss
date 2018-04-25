@@ -302,6 +302,16 @@ input {
 .modal-header {
   color: #111;
 }
+
 .modal-body {
   color: #111;
+}
+
+.inbox-nav-item {
+  color: #2E6C80;
+  margin-right: 0.2rem;
+
+  &a {
+    margin-top: 10px;
+  }
 }

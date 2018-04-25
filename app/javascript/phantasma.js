@@ -42,7 +42,7 @@ window.PH = {
   },
 
   addWallet: function(email, priv_key) {
-    // TODO use NEO api
+    // TODO: use NEO api
     // and set current wallet to newly created wallet
     return false;
   },
@@ -66,12 +66,23 @@ window.PH = {
     PH.saveWallets();
 
     PH.loaded = true;
+
+    PH.fetchInbox();
   },
 
   inboxPane: {
     page: 0,
     pages: Math.max(Math.floor((dummyInboxInitialData.length + PH_ITEMS_PER_PAGE - 1) / PH_ITEMS_PER_PAGE), 1),
     items: dummyInboxInitialData
+  },
+
+  fetchInbox: function(callback) {
+    // TODO: use NEO api
+    // Set inboxPane.items
+
+    if (callback) {
+      callback();
+    }
   }
 };
 
