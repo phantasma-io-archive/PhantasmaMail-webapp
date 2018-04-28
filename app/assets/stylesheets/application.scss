@@ -151,6 +151,18 @@ body {
     border-bottom: 2px solid #ddd;
     padding: 0.5rem;
 
+    a {
+      color: #2E6C80;
+      position: absolute;
+      right: 10px;
+      top: 3px;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
     .sender-and-date {
       font-size: smaller;
     }
@@ -312,6 +324,6 @@ input {
   margin-right: 0.2rem;
 
   &a {
-    margin-top: 10px;
+    margin-top: 12px;
   }
 }

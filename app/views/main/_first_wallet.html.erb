@@ -36,14 +36,15 @@ if (PH.wallets.length === 0) {
 </div>
 
 <script>
-document.getElementById('add-mailbox').addEventListener('click', function(elem) {
-  elem.preventDefault();
+PH.afterLoad(function() {
+  document.getElementById('add-mailbox').addEventListener('click', function(elem) {
+    elem.preventDefault();
 
-  $('#firstWallet').modal();
+    $('#firstWallet').modal();
+  });
+
+  if (PH.wallets.length === 0) {
+      $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
+  }
 });
-
-// TODO: remove "false &&" after testing
-if (false && PH.wallets.length === 0) {
-  $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
-}
 </script>

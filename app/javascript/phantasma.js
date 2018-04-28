@@ -5,23 +5,36 @@ neonJs = require('@cityofzion/neon-js');
 var dummyInboxInitialData = [
   {
     date: Date.now(),
-    message: 'Lorem ipsum',
-    sender: Math.random().toString(16).substring(2)
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ...',
+    sender: Math.random().toString(24).substring(2)
   },
   {
     date: Date.now(),
-    message: 'Lorem ipsum 2',
-    sender: Math.random().toString(16).substring(2)
+    message: 'Etiam eget ligula eu lectus lobortis condimentum. Aliquam ...',
+    sender: Math.random().toString(24).substring(2)
   },
   {
     date: Date.now(),
-    message: 'Lorem ipsum 3',
-    sender: Math.random().toString(16).substring(2)
+    message: 'Pellentesque habitant morbi tristique senectus et netus et ...',
+    sender: Math.random().toString(24).substring(2)
   },
   {
     date: Date.now(),
-    message: 'Lorem ipsum 4',
-    sender: Math.random().toString(16).substring(2)
+    message: 'Nulla at risus. Quisque purus magna, auctor et, sagittis ...',
+    sender: Math.random().toString(24).substring(2)
+  }
+];
+
+var dummyWallets = [
+  {
+    name: 'demo1@phantasma.io',
+    address: Math.random().toString(24).substring(2),
+    privateKey: Math.random().toString(24).substring(2)
+  },
+  {
+    name: 'demo2@phantasma.io',
+    address: Math.random().toString(24).substring(2),
+    privateKey: Math.random().toString(24).substring(2)
   }
 ];
 
@@ -36,15 +49,41 @@ window.PH = {
   wallets: [],
   loaded: false,
 
+  loadDummyData: function() {
+    localStorage.setItem("disclaimerConfirm", "1");
+
+    PH.mainWallet = 0;
+    PH.wallets = dummyWallets;
+    PH.loaded = true;
+
+    PH.saveWallets();
+
+    location.reload();
+  },
+
   saveWallets: function() {
     localStorage.setItem("wallets", JSON.stringify(PH.wallets));
-    localStorage.setItem("main_wallet", PH.mainWallet);
+
+    localStorage.setItem("main_wallet", Math.max(-1, Math.min(PH.wallets.length - 1, PH.mainWallet)));
   },
 
   addWallet: function(email, priv_key) {
     // TODO: use NEO api
     // and set current wallet to newly created wallet
     return false;
+  },
+
+  selectWallet(number) {
+    if (number < 0 || number >= PH.wallets.length) {
+      console.warn('Illegal wallet selected');
+      return;
+    }
+
+    PH.mainWallet = number;
+
+    PH.saveWallets();
+
+    location.reload();
   },
 
   forgetWallet: function() {
@@ -58,22 +97,18 @@ window.PH = {
   onLoad: function() {
     if (PH.loaded) { return; }
 
-    if (typeof(Storage) !== "undefined" && localStorage.getItem("wallets")) {
-      PH.wallets = JSON.parse(localStorage.getItem("wallets"));
-      PH.mainWallet = PH.wallets.length > 0 ? 0 : -1;
-    }
-
-    PH.saveWallets();
-
     PH.loaded = true;
 
-    PH.fetchInbox();
+    PH.wallets = JSON.parse(localStorage.getItem("wallets"));
+    PH.mainWallet = Math.max(-1, Math.min(PH.wallets.length - 1, parseInt(localStorage.getItem("main_wallet"))));
+
+    PH.saveWallets();
   },
 
   inboxPane: {
     page: 0,
-    pages: Math.max(Math.floor((dummyInboxInitialData.length + PH_ITEMS_PER_PAGE - 1) / PH_ITEMS_PER_PAGE), 1),
-    items: dummyInboxInitialData
+    pages: 1,
+    items: []
   },
 
   fetchInbox: function(callback) {
@@ -83,9 +118,35 @@ window.PH = {
     if (callback) {
       callback();
     }
+  },
+
+  afterLoad: function(callback) {
+    if (PH.loaded) {
+      callback();
+    } else {
+      document.body.addEventListener("ph-local-data-loaded", callback);
+    }
   }
 };
 
 $(document).ready(function(){
   PH.onLoad();
+
+  // Launch "ph-local-data-loaded" event
+  var event;
+  if (document.createEvent) {
+    event = document.createEvent("HTMLEvents");
+    event.initEvent("ph-local-data-loaded", true, true);
+  } else {
+    event = document.createEventObject();
+    event.eventType = "ph-local-data-loaded";
+  }
+
+  event.eventName = "ph-local-data-loaded";
+
+  if (document.createEvent) {
+    document.body.dispatchEvent(event);
+  } else {
+    document.body.fireEvent("on" + event.eventType, event);
+  }
 });

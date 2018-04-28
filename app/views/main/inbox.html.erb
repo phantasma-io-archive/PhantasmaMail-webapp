@@ -1,10 +1,15 @@
 <%= render "redirect_on_disclaimer" %>
 <%= render "first_wallet" %>
+<%= render "compose" %>
 
 <center>
   <div class="panel">
     <div class="clearfix">
       <div class="pull-left">
+        <a href="#" class="inbox-nav-item btn action-btn" id="composeBtn" style="background-color: #1F5669; color: #FFFFFF;">
+          Compose
+        </a>
+
         <div class="dropdown">
           <button class="inbox-nav-item btn action-btn dropdown-toggle" type="button" id="mailSelectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             None
@@ -38,24 +43,23 @@
       </div>
     </div>
 
-    <div id="emailsList">
-
-    </div>
-
-    <div class="tab-content"><div class="tab-pane fade in active" id="home"><div class="list-group">   <a href="#" class="list-group-item"><div class="checkbox"><label><input type="checkbox"></label></div><span class="name" style="min-width: 120px; display: inline-block;">bambi</span><span class="">GAS test</span><span class="text-muted" style="font-size: 11px;">- Testing some GAS...</span><span class="badge">12:10 AM</span><span class="pull-right"></span></a>   </div></div><div class="tab-pane fade in" id="profile"><div class="list-group"><div class="list-group-item"><span class="text-center">Nothing here.</span></div></div></div><div class="tab-pane fade in" id="messages"><div class="list-group"><div class="list-group-item"><span class="text-center">Nothing here.</span></div></div></div><div class="tab-pane fade in" id="settings"> This tab is empty.</div></div>
-
+    <div id="emailsList" />
   </div>
 </center>
 
 <script>
+PH.afterLoad(function() {
   var elem = document.getElementById('refreshMailbox');
   elem.addEventListener('click', function(event) {
     event.preventDefault();
+    event.target.className += ' fa-spin';
 
     PH.fetchInbox(function() {
       PH.inboxPane.page = 0;
 
       inboxPaneUpdate();
+
+      event.target.className = event.target.className.replace(' fa-spin', '');
     });
   });
 
@@ -106,12 +110,15 @@
       var items = PH.inboxPane.items.slice(PH.inboxPane.page * PH_ITEMS_PER_PAGE, (PH.inboxPane.page + 1) * PH_ITEMS_PER_PAGE - 1);
 
       elem.innerHTML = '<div class="pane">' + items.map(function(email) {
-        return '<div class="row pane-item"><div class="col-md-3 sender-and-date">' + email.sender + '<br/>' + timestampToDateString(email.date) + '</div><div class="col-md-9 body">' + email.message + '</div></div>';
+        return '<div class="row pane-item"><div class="col-md-3 sender-and-date">' + email.sender + '<br/>' + timestampToDateString(email.date) + '</div><div class="col-md-9 body">' + email.message + '<a href="#"><i class="fa fa-external-link"></i></a></div></div>';
       }).join('') + '</div>';
     } else {
       elem.style.display = 'none';
     }
   };
 
-  inboxPaneUpdate();
+  PH.fetchInbox(function() {
+    inboxPaneUpdate();
+  });
+});
 </script>

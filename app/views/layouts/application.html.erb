@@ -9,8 +9,8 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= favicon_link_tag 'favicon.ico', type: 'image/ico' %>
 
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Geo" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet" async>
+    <link href="https://fonts.googleapis.com/css?family=Geo" rel="stylesheet" async>
   </head>
 
   <body>
@@ -23,6 +23,8 @@
 
         <% if controller_name == 'main' %>
           <div class="col-md-6 text-right" id='nav-menu' style="display: none;">
+            <a href="#" onclick="event.preventDefault(); PH.loadDummyData()" style="color: blue; background: white">Load dummy data</a>
+
             <div class="btn-group">
               <button type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <%= action_name == 'subs' ? 'Subscribers' : (action_name == 'wallet' ? 'Payments' : action_name) %>
@@ -39,12 +41,10 @@
             </div>
 
             <div class="btn-group" style="margin-left: 8px">
-              <button type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button id="walletListBtn" type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 demo@phantasma.io
               </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">demo2@phantasma.io</a>
-                <a class="dropdown-item" href="#">demo3@phantasma.io</a>
+              <div class="dropdown-menu" id="walletList">
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" id="add-mailbox" href="#">Add Mailbox</a>
               </div>
@@ -63,9 +63,26 @@
 </html>
 
 <script>
+PH.afterLoad(function() {
+  var elem = document.getElementById('nav-menu');
+  if (elem && typeof(Storage) !== "undefined") {
+    elem.style.display = 'block';
+  }
 
-var elem = document.getElementById('nav-menu');
-if (elem && typeof(Storage) !== "undefined") {
-  elem.style.display = 'block';
-}
+  elem = document.getElementById("walletListBtn");
+  elem.innerHTML = PH.mainWallet === null || PH.mainWallet === undefined || PH.mainWallet === -1 ? 'Add Mailbox' : PH.wallets[PH.mainWallet].name;
+
+  window.selectWalletBtnClk = function(event) {
+    event.preventDefault();
+
+    var wallet = parseInt(event.target.getAttribute('data-value'));
+
+    PH.selectWallet(wallet);
+  }
+
+  elem = document.getElementById('walletList');
+  for (var i = PH.wallets.length - 1; i >= 0; --i) {
+    elem.innerHTML = '<a class="dropdown-item" href="#" onclick="selectWalletBtnClk(event)" data-value="' + i + '">' + PH.wallets[i].name + '</a>' + elem.innerHTML;
+  }
+});
 </script>

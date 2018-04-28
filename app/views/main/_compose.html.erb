@@ -1,0 +1,33 @@
+<div class="modal fade" id="compose" tabindex="-1" role="dialog" aria-labelledby="composeLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="composeLabel">Compose Message</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="recipient" class="control-label">Recipient</label>
+          <input type="text" required class="form-control" id="recipient" name="recipient" placeholder="friend@phantasma.io" />
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="control-label">Message</label>
+          <input type="text" required class="form-control" id="message" name="message" placeholder="Hello world..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="addWallet(event)" class="btn pretty-btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+PH.afterLoad(function() {
+  document.getElementById('composeBtn').addEventListener('click', function(elem) {
+    elem.preventDefault();
+
+    $('#compose').modal();
+  });
+});
+</script>
