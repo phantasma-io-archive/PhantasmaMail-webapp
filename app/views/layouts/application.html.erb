@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-		<meta charset="utf-8">
+    <meta charset="utf-8">
     <title>Phantasma</title>
     <%= csrf_meta_tags %>
 
@@ -9,20 +9,144 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= favicon_link_tag 'favicon.ico', type: 'image/ico' %>
 
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet" async>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet" async>
     <link href="https://fonts.googleapis.com/css?family=Geo" rel="stylesheet" async>
   </head>
 
-  <body>
-		<div class="header">
-			<div class="row">
-				<div class="col-md-6 text-left">
-					<a href="<%= root_url %>" style="font-family: 'Geo',sans-serif; font-size: larger">
+  <body class="main2">
+    <div class="row">
+      <div class="col-lg-7 left-and-center-nav">
+        <div class="row">
+          <div class="col-md-4 mail-left">
+            <div class="sidebar-item" style="display: flex">
+              <img src="https://phantasma.io/img/phantasma_logo.svg" width="32" style="margin-right: 10px" /> <span class="current_identity">demo@phantasma.io</span>
+            </div>
+
+            <div class="sidebar-item">
+              <a class="btn btn-primary"><i class="fa fa-edit"></i> New message</a>
+            </div>
+
+            <div class="sidebar-item selectable selected">
+              <a href="#"><i class="fa fa-inbox"></i>Inbox</a>
+            </div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-location-arrow"></i>Sent</a>
+            </div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-file"></i>Draft</a>
+            </div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-star"></i>Important</a>
+            </div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-trash"></i>Trash</a>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-envelope"></i>Mail</a>
+            </div>
+
+            <div class="sidebar-item selectable">
+              <a href="#"><i class="fa fa-connectdevelop"></i>Wallet</a>
+            </div>
+<!--
+            <div class="sidebar-item ">
+              SETTINGS
+            </div>
+-->
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-item">
+              <a href="#"><i class="fa fa-sign-out"></i>Forget me</a>
+            </div>
+          </div>
+
+          <div class="col-md-8 mail-center">
+            <div class="search">
+
+            </div>
+
+            <div class="inbox">
+
+              <div class="message-list">
+                <div class="message">
+                  <div class="title">
+                    Illustration for Phantasma
+                  </div>
+
+                  <div class="body">
+                    Lorem ipsum
+                  </div>
+
+                  <div class="footer">
+                    Philip Smith
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 mail-right">
+        <div class="pane">
+          <div class="controls">
+
+          </div>
+
+          <div class="people">
+            X to Y
+          </div>
+
+          <div class="title">
+            Phantasma Project
+          </div>
+
+          <div class="body">
+            Lorem ipsum
+          </div>
+        </div>
+
+        <div class="pane more">
+          <div class="people">
+            X to Y
+          </div>
+
+          <div class="body">
+            Lorem ipsum
+          </div>
+        </div>
+
+        <div class="pane more">
+          <div class="people">
+            X to Y
+          </div>
+
+          <div class="body">
+            Lorem ipsum
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--
+    <div class="header">
+      <div class="row">
+        <div class="col-lg-6 text-left">
+          <a href="<%= root_url %>" style="font-family: 'Geo',sans-serif; font-size: larger">
             <img src="http://phantasma.io/img/phantasma_monochrome.svg" width="32" style="margin-right: 10px" />PHANTASMA PROTOCOL</a>
-				</div>
+        </div>
 
         <% if controller_name == 'main' %>
-          <div class="col-md-6 text-right" id='nav-menu' style="display: none;">
+          <div class="col-lg-6 text-right" id='nav-menu' style="display: none;">
             <a href="#" onclick="event.preventDefault(); PH.loadDummyData()" style="color: blue; background: white">Load dummy data</a>
 
             <div class="btn-group">
@@ -49,12 +173,12 @@
                 <a class="dropdown-item" id="add-mailbox" href="#">Add Mailbox</a>
               </div>
             </div>
-  				</div>
+          </div>
         <% end %>
-			</div>
-		</div>
+      </div>
+    </div>
 
-		<div class="main">
+    <div class="main">
       <div class="container">
         <%= yield %>
       </div>
@@ -86,3 +210,4 @@ PH.afterLoad(function() {
   }
 });
 </script>
+-->
