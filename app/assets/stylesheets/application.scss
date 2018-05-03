@@ -261,7 +261,6 @@ body {
   margin: 0;
   color: #fff;
   font-size: large;
-  min-height: 768px;
 
   .container {
     padding: 8px 0;
@@ -325,5 +324,100 @@ input {
 
   &a {
     margin-top: 12px;
+  }
+}
+
+body.main2 {
+  color: #C2C9CD;
+  background-color: #F7FAF9;
+
+  a {
+    color: #2B5668;
+  }
+
+  span.current_identity {
+    padding-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  div.sidebar-item {
+    height: 4rem;
+    padding: 1rem 0;
+    display: block;
+    margin-left: 1px;
+    padding-left: 2.5rem;
+    border-left: 3px solid white;
+
+
+    &.selectable {
+      &.selected {
+        color: #2B5668;
+        border-left: 3px solid #2B5668;
+
+        a {
+          color: #2B5668;
+        }
+      }
+    }
+
+    .selected {
+      color: #2B5668;
+    }
+
+    a {
+      i.fa {
+        min-width: 20%;
+      }
+
+      font-size: larger;
+      color: #C2C9CD;
+    }
+  }
+
+  div.sidebar-divider {
+    margin-left: 1.5rem;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .mail-left {
+    background-color: white;
+    box-shadow: 4px 0px 10px #EBEFF0;
+  }
+
+  .mail-center {
+    padding: 1.5rem;
+  }
+
+  .mail-right {
+    background-color: white;
+    box-shadow: 3px 0px 10px #EBEFF0 inset;
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover, &:focus, &:active {
+      opacity: 0.8;
+    }
+  }
+
+  .btn:not(x):not(x):not(x):not(x) {
+    font-size: smaller;
+    padding: 0.7rem 1.7rem;
+    border-radius: 6px;
+
+    i.fa {
+      font-size: large;
+    }
+
+    &.btn-primary {
+      color: #F7FAF9;
+      background-color: #2B5668;
+    }
   }
 }
