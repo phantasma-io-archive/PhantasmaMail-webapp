@@ -90,12 +90,12 @@
                     Illustration for Phantasma
                   </span>
                   <span class="pull-right mail-date">
-                    <%= Date.today %>
+                    <%= Date.today - 1.day %>
                   </span>
                 </div>
 
                 <div class="body">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et...
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa. Pellentesque habitant morbi...
                 </div>
 
                 <div class="clearfix footer">
@@ -116,7 +116,7 @@
                   </span>
 
                   <span class="pull-right mail-date">
-                    <%= Date.today %>
+                    <%= Date.today - 2.day %>
                   </span>
                 </div>
 
@@ -141,12 +141,23 @@
 
       <div class="col-lg-5 mail-right">
         <div class="pane">
-          <div class="controls">
+          <div class="clearfix controls">
+            <div class="pull-left mail-nav">
+              <i class="fa fa-arrow-left"></i>
+              <i class="fa fa-arrow-right" style="margin-left: 1rem;"></i>
+            </div>
 
+            <div class="pull-right options">
+              <i class="fa fa-ellipsis-v"></i>
+            </div>
+          </div>
+
+          <div class="relative-date">
+            <%= time_ago_in_words(Time.now - 19.hours).capitalize %> ago
           </div>
 
           <div class="people">
-            X to Y
+            <%= SecureRandom.hex(16) %> <span class="ligature">to</span> <%= SecureRandom.hex(16) %>
           </div>
 
           <div class="title">
@@ -154,28 +165,35 @@
           </div>
 
           <div class="body">
-            Lorem ipsum
+            A purely peer-to-peer version of electronic cash would allow online
+payments to be sent directly from one party to another without going through a
+financial institution. Digital signatures provide part of the solution, but the main
+benefits are lost if a trusted third party is still required to prevent double-spending.
+We propose a solution to the double-spending problem using a peer-to-peer network.
+The network timestamps transactions by hashing them into an ongoing chain of
+hash-based proof-of-work, forming a record that cannot be changed without redoing
+the proof-of-work. The longest chain not only serves as proof of the sequence of
+events witnessed, but proof that it came from the largest pool of CPU power. As
+long as a majority of CPU power is controlled by nodes that are not cooperating to
+attack the network, they'll generate the longest chain and outpace attackers.<br/>
+            <br/>
+            Cheers,<br/>
+            PH Dev
           </div>
         </div>
 
         <div class="pane more">
-          <div class="people">
-            X to Y
+          <div class="relative-date">
+            <%= time_ago_in_words(Time.now - 21.hours).capitalize %> ago
           </div>
 
           <div class="body">
-            Lorem ipsum
-          </div>
-        </div>
-
-        <div class="pane more">
-          <div class="people">
-            X to Y
+            The network itself requires minimal structure. Messages are broadcast on a best effort
+basis, and nodes can leave and rejoin the network at will, accepting the longest
+proof-of-work chain as proof of what happened while they were gone.
           </div>
 
-          <div class="body">
-            Lorem ipsum
-          </div>
+          <div class="accent"></div>
         </div>
       </div>
     </div>

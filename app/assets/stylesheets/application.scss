@@ -479,8 +479,60 @@ body.main2 {
   }
 
   .mail-right {
-    background-color: white;
-    box-shadow: 0px -10px 10px 5px #f3f3f3;
+    .pane {
+      box-shadow: 0px -10px 10px 5px #f3f3f3;
+      background-color: white;
+      margin-top: 0;
+      padding: 1rem 1.5rem;
+
+      .controls {
+        font-size: larger;
+        color: #2D5667;
+      }
+
+      .relative-date {
+        margin-top: 0.5rem;
+        font-size: small;
+      }
+
+      .people {
+        margin-top: 0.3rem;
+        font-size: small;
+
+        .ligature {
+          color: #2D5667;
+          font-weight: bold;
+        }
+      }
+
+      .title {
+        color: #2D5667;
+        font-size: x-large;
+        padding-top: 2rem;
+        font-weight: bold;
+      }
+
+      .body {
+        padding-top: 1rem;
+      }
+
+      &.more {
+        margin-top: 3rem;
+      }
+
+      .accent {
+        height: 0;
+        width: 0;
+        position: relative;
+        left: 10px;
+        top: -160px;
+        content: " ";
+        transform: rotate(135deg);
+        border-bottom: 30px solid white;
+        border-right: 30px solid transparent;
+        box-shadow: -2px 1px 2px 1px white;
+      }
+    }
   }
 
   a {
