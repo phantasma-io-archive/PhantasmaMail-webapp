@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background: #F7FAF9">
   <head>
     <meta charset="utf-8">
     <title>Phantasma</title>
@@ -69,24 +69,69 @@
 
           <div class="col-md-8 mail-center">
             <div class="search">
-
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span id="mail-search-submit" class="input-group-text"><i class="fa fa-search"></i></span>
+                </div>
+                <input type="text" class="form-control" id="mail-search" placeholder="Search Mail" required="true">
+              </div>
             </div>
 
-            <div class="inbox">
+            <div class="clearfix sort">
+              <div class="pull-right">
+                <span class="sel">Sort: Newest First</span><span class="control"><i class="fa fa-chevron-down"></i></span>
+              </div>
+            </div>
 
-              <div class="message-list">
-                <div class="message">
-                  <div class="title">
+            <div class="message-list">
+              <div class="message">
+                <div class="clearfix title">
+                  <span class="pull-left mail-title">
                     Illustration for Phantasma
-                  </div>
+                  </span>
+                  <span class="pull-right mail-date">
+                    <%= Date.today %>
+                  </span>
+                </div>
 
-                  <div class="body">
-                    Lorem ipsum
-                  </div>
+                <div class="body">
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et...
+                </div>
 
-                  <div class="footer">
+                <div class="clearfix footer">
+                  <span class="pull-left name">
                     Philip Smith
-                  </div>
+                  </span>
+
+                  <span class="pull-right address">
+                    <%= SecureRandom.hex(16) %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="message">
+                <div class="clearfix title">
+                  <span class="pull-left mail-title">
+                    Illustration for Phantasma 2
+                  </span>
+
+                  <span class="pull-right mail-date">
+                    <%= Date.today %>
+                  </span>
+                </div>
+
+                <div class="body">
+                  Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure...
+                </div>
+
+                <div class="clearfix footer">
+                  <span class="pull-left name">
+                    Philip Smith 2
+                  </span>
+
+                  <span class="pull-right address">
+                    <%= SecureRandom.hex(16) %>
+                  </span>
                 </div>
               </div>
             </div>
@@ -136,6 +181,10 @@
     </div>
   </body>
 </html>
+
+<script>
+document.getElementsByClassName('mail-left')[0].style.minHeight = window.innerHeight + 'px';
+</script>
 
 <!--
     <div class="header">

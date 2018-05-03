@@ -391,11 +391,96 @@ body.main2 {
 
   .mail-center {
     padding: 1.5rem;
+
+    .search {
+      border-bottom: 3px solid #eee;
+      padding-bottom: 5px;
+      margin-bottom: 1rem;
+
+      #mail-search-submit {
+        border: 0;
+        background-color: transparent;
+        color: lightgray;
+        cursor: pointer;
+      }
+
+      #mail-search {
+        border: 0;
+        background-color: transparent;
+        color: #aaa;
+
+        &::placeholder {
+          color: #ddd;
+        }
+
+        &:focus {
+          border-color: inherit;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          outline: none;
+        }
+      }
+    }
+
+    .sort {
+      cursor: pointer;
+      margin-bottom: 2rem;
+
+      .control {
+        margin-left: 0.5rem;
+      }
+    }
+
+    .message-list {
+      .message {
+        background-color: white;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        box-shadow: 0px 3px 13px #ddd;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 0.8;
+        }
+
+        .title {
+          .mail-title {
+            font-size: large;
+            color: #2D5667;
+          }
+
+          .mail-date {
+            font-size: smaller;
+          }
+        }
+
+        .body {
+          text-align: justify;
+          text-justify: inter-word;
+          margin-top: 0.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .footer {
+          border-top: 2px solid #f3f3f3;
+          padding-top: 10px;
+          font-size: smaller;
+
+          .name {
+            color: #2D5667;
+          }
+
+          .address {
+            opacity: 0.6;
+          }
+        }
+      }
+    }
   }
 
   .mail-right {
     background-color: white;
-    box-shadow: 3px 0px 10px #EBEFF0 inset;
+    box-shadow: 0px -10px 10px 5px #f3f3f3;
   }
 
   a {
