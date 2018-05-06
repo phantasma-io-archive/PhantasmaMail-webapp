@@ -340,6 +340,7 @@ body.main2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: smaller;
   }
 
   div.sidebar-item {
@@ -352,13 +353,11 @@ body.main2 {
 
 
     &.selectable {
+      cursor: pointer;
+
       &.selected {
         color: #2B5668;
         border-left: 3px solid #2B5668;
-
-        a {
-          color: #2B5668;
-        }
       }
     }
 
@@ -366,14 +365,12 @@ body.main2 {
       color: #2B5668;
     }
 
-    a {
-      i.fa {
-        min-width: 20%;
-      }
-
-      font-size: larger;
-      color: #C2C9CD;
+    i.fa {
+      min-width: 20%;
     }
+
+    font-size: larger;
+    color: #C2C9CD;
   }
 
   div.sidebar-divider {
@@ -387,10 +384,12 @@ body.main2 {
   .mail-left {
     background-color: white;
     box-shadow: 4px 0px 10px #EBEFF0;
+    overflow-y: scroll;
   }
 
   .mail-center {
     padding: 1.5rem;
+    overflow-y: scroll;
 
     .search {
       border-bottom: 3px solid #eee;
@@ -468,6 +467,8 @@ body.main2 {
 
           .name {
             color: #2D5667;
+            margin-right: 0.5rem;
+            font-weight: bold;
           }
 
           .address {
@@ -479,6 +480,8 @@ body.main2 {
   }
 
   .mail-right {
+    overflow-y: scroll;
+
     .pane {
       box-shadow: 0px -10px 10px 5px #f3f3f3;
       background-color: white;

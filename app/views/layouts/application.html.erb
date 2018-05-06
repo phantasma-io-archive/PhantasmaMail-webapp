@@ -23,37 +23,38 @@
             </div>
 
             <div class="sidebar-item">
-              <a class="btn btn-primary"><i class="fa fa-edit"></i> New message</a>
+              <a id="composeBtn" class="btn btn-primary"><i class="fa fa-edit"></i> New message</a>
+            </div>
+            <br/>
+
+            <div id="inboxSection" class="sidebar-item selectable">
+              <i class="fa fa-inbox"></i>Inbox
             </div>
 
-            <div class="sidebar-item selectable selected">
-              <a href="#"><i class="fa fa-inbox"></i>Inbox</a>
+            <div id="sentSection" class="sidebar-item selectable">
+              <i class="fa fa-location-arrow"></i>Sent
             </div>
 
-            <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-location-arrow"></i>Sent</a>
+            <div id="draftSection" class="sidebar-item selectable">
+              <i class="fa fa-file"></i>Draft
             </div>
 
-            <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-file"></i>Draft</a>
+            <div id="importantSection" class="sidebar-item selectable">
+              <i class="fa fa-star"></i>Important
             </div>
 
-            <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-star"></i>Important</a>
-            </div>
-
-            <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-trash"></i>Trash</a>
+            <div id="trashSection" class="sidebar-item selectable">
+              <i class="fa fa-trash"></i>Trash
             </div>
 
             <div class="sidebar-divider"></div>
 
             <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-envelope"></i>Mail</a>
+              <i class="fa fa-envelope"></i>Mail
             </div>
 
             <div class="sidebar-item selectable">
-              <a href="#"><i class="fa fa-connectdevelop"></i>Wallet</a>
+              <i class="fa fa-connectdevelop"></i>Wallet
             </div>
 <!--
             <div class="sidebar-item ">
@@ -200,8 +201,63 @@ proof-of-work chain as proof of what happened while they were gone.
   </body>
 </html>
 
+<%= render "compose" %>
+
 <script>
-document.getElementsByClassName('mail-left')[0].style.minHeight = window.innerHeight + 'px';
+var setWindowSize = function() {
+  document.getElementsByClassName('mail-left')[0].style.height = window.innerHeight + 'px';
+  document.getElementsByClassName('mail-center')[0].style.height = window.innerHeight + 'px';
+  document.getElementsByClassName('mail-right')[0].style.height = window.innerHeight + 'px';
+};
+
+setWindowSize();
+
+window.addEventListener('resize', setWindowSize);
+
+PH.afterLoad(function() {
+  // Nav tab identity
+  document.getElementsByClassName('current_identity')[0].innerHTML = PH.state.wallets[PH.state.mainWallet].name;
+
+  // Section tab selected
+  document.getElementById(PH.state.section + 'Section').className += ' selected';
+
+  // Section tab links
+  var elems = document.getElementsByClassName('selectable');
+  for (var i = 0; i < elems.length; ++i) {
+    elems[i].onclick = function(event) {
+      event.preventDefault();
+      var section = event.target.id.replace('Section', '');
+      PH.state.section = section;
+      PH.saveData();
+      location.reload();
+    };
+  }
+
+  // Center pane content
+  var content = "";
+  for (var i = 0; i < PH.state.inbox.items.length; ++i) {
+    var elem = PH.state.inbox.items[i];
+    var timeStr = new Date(elem.time * 1000).toLocaleDateString();
+    content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.title) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.body, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.from_name) + '</b></span><span class="address">' + PH.trunc(elem.from) + '</span></span><span class="pull-right address">' + PH.trunc(elem.to) + '</span></div></div>';
+  }
+  var container = document.getElementsByClassName('message-list')[0];
+  container.innerHTML = content;
+
+  // Center pane content message selection
+  for (var i = 0; i < container.children.length; ++i) {
+    container.children[i].onclick = function(event) {
+      event.preventDefault();
+
+      if (PH.state.inbox.selected === i) {
+        PH.state.inbox.selected = -1;
+      } else {
+        PH.state.inbox.selected = i;
+      }
+      PH.saveData();
+      location.reload();
+    };
+  }
+});
 </script>
 
 <!--
