@@ -389,6 +389,7 @@ body.main2 {
 
   .mail-center {
     padding: 1.5rem;
+    padding-right: 0.5rem;
     overflow-y: scroll;
 
     .search {
@@ -534,6 +535,15 @@ body.main2 {
         border-bottom: 30px solid white;
         border-right: 30px solid transparent;
         box-shadow: -2px 1px 2px 1px white;
+      }
+    }
+
+    .msgNav {
+      cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+        opacity: 0.5;
       }
     }
   }

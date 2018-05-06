@@ -15,7 +15,7 @@
 
   <body class="main2">
     <div class="row">
-      <div class="col-lg-7 left-and-center-nav">
+      <div class="col-lg left-and-center-nav">
         <div class="row">
           <div class="col-md-4 mail-left">
             <div class="sidebar-item" style="display: flex">
@@ -84,105 +84,13 @@
               </div>
             </div>
 
-            <div class="message-list">
-              <div class="message">
-                <div class="clearfix title">
-                  <span class="pull-left mail-title">
-                    Illustration for Phantasma
-                  </span>
-                  <span class="pull-right mail-date">
-                    <%= Date.today - 1.day %>
-                  </span>
-                </div>
-
-                <div class="body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eget ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa. Pellentesque habitant morbi...
-                </div>
-
-                <div class="clearfix footer">
-                  <span class="pull-left name">
-                    Philip Smith
-                  </span>
-
-                  <span class="pull-right address">
-                    <%= SecureRandom.hex(16) %>
-                  </span>
-                </div>
-              </div>
-
-              <div class="message">
-                <div class="clearfix title">
-                  <span class="pull-left mail-title">
-                    Illustration for Phantasma 2
-                  </span>
-
-                  <span class="pull-right mail-date">
-                    <%= Date.today - 2.day %>
-                  </span>
-                </div>
-
-                <div class="body">
-                  Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure...
-                </div>
-
-                <div class="clearfix footer">
-                  <span class="pull-left name">
-                    Philip Smith 2
-                  </span>
-
-                  <span class="pull-right address">
-                    <%= SecureRandom.hex(16) %>
-                  </span>
-                </div>
-              </div>
-            </div>
+            <div class="message-list"></div>
           </div>
         </div>
       </div>
 
-      <div class="col-lg-5 mail-right">
-        <div class="pane">
-          <div class="clearfix controls">
-            <div class="pull-left mail-nav">
-              <i class="fa fa-arrow-left"></i>
-              <i class="fa fa-arrow-right" style="margin-left: 1rem;"></i>
-            </div>
-
-            <div class="pull-right options">
-              <i class="fa fa-ellipsis-v"></i>
-            </div>
-          </div>
-
-          <div class="relative-date">
-            <%= time_ago_in_words(Time.now - 19.hours).capitalize %> ago
-          </div>
-
-          <div class="people">
-            <%= SecureRandom.hex(16) %> <span class="ligature">to</span> <%= SecureRandom.hex(16) %>
-          </div>
-
-          <div class="title">
-            Phantasma Project
-          </div>
-
-          <div class="body">
-            A purely peer-to-peer version of electronic cash would allow online
-payments to be sent directly from one party to another without going through a
-financial institution. Digital signatures provide part of the solution, but the main
-benefits are lost if a trusted third party is still required to prevent double-spending.
-We propose a solution to the double-spending problem using a peer-to-peer network.
-The network timestamps transactions by hashing them into an ongoing chain of
-hash-based proof-of-work, forming a record that cannot be changed without redoing
-the proof-of-work. The longest chain not only serves as proof of the sequence of
-events witnessed, but proof that it came from the largest pool of CPU power. As
-long as a majority of CPU power is controlled by nodes that are not cooperating to
-attack the network, they'll generate the longest chain and outpace attackers.<br/>
-            <br/>
-            Cheers,<br/>
-            PH Dev
-          </div>
-        </div>
-
+      <div class="col-lg-5 mail-right" style="display: none">
+        <!--
         <div class="pane more">
           <div class="relative-date">
             <%= time_ago_in_words(Time.now - 21.hours).capitalize %> ago
@@ -196,6 +104,7 @@ proof-of-work chain as proof of what happened while they were gone.
 
           <div class="accent"></div>
         </div>
+      -->
       </div>
     </div>
   </body>
@@ -214,7 +123,9 @@ setWindowSize();
 
 window.addEventListener('resize', setWindowSize);
 
-PH.afterLoad(function() {
+window.render = function() {
+  PH.saveData();
+
   // Nav tab identity
   document.getElementsByClassName('current_identity')[0].innerHTML = PH.state.wallets[PH.state.mainWallet].name;
 
@@ -222,16 +133,17 @@ PH.afterLoad(function() {
   document.getElementById(PH.state.section + 'Section').className += ' selected';
 
   // Section tab links
+  /*
   var elems = document.getElementsByClassName('selectable');
   for (var i = 0; i < elems.length; ++i) {
     elems[i].onclick = function(event) {
       event.preventDefault();
       var section = event.target.id.replace('Section', '');
       PH.state.section = section;
-      PH.saveData();
-      location.reload();
+      render();
     };
   }
+  */
 
   // Center pane content
   var content = "";
@@ -248,89 +160,55 @@ PH.afterLoad(function() {
     container.children[i].onclick = function(event) {
       event.preventDefault();
 
-      if (PH.state.inbox.selected === i) {
+      if (PH.state.inbox.selected === this + 0) {
         PH.state.inbox.selected = -1;
       } else {
-        PH.state.inbox.selected = i;
+        PH.state.inbox.selected = this + 0;
       }
-      PH.saveData();
-      location.reload();
-    };
+      render();
+    }.bind(i);
   }
-});
+
+  // Right pane
+  if (PH.state.inbox.selected === -1) {
+    var centerPane = document.getElementsByClassName('mail-center')[0];
+    centerPane.style.paddingRight = '2rem';
+    var rightPane = document.getElementsByClassName('mail-right')[0];
+    rightPane.style.display = 'none';
+  } else {
+    var centerPane = document.getElementsByClassName('mail-center')[0];
+    centerPane.style.paddingRight = null;
+    var rightPane = document.getElementsByClassName('mail-right')[0];
+    rightPane.style.display = null;
+    var content = "";
+    var message = PH.state.inbox.items[PH.state.inbox.selected];
+
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.time + '</div><div class="people">' + message.from + ' <span class="ligature">to</span> ' + message.to + '</div><div class="title">' + message.title + '</div><div class="body">' + message.body + '</div></div>';
+    rightPane.innerHTML = content;
+
+    // Right pane - top nav arrows
+    if (PH.state.inbox.selected === 0) {
+      document.getElementById('prevMsg').className += " disabled";
+    } else {
+      document.getElementById('prevMsg').onclick = function(event) {
+        event.preventDefault();
+
+        PH.state.inbox.selected -= 1;
+        render();
+      };
+    }
+    if (PH.state.inbox.selected === PH.state.inbox.items.length - 1) {
+      document.getElementById('nextMsg').className += " disabled";
+    } else {
+      document.getElementById('nextMsg').onclick = function(event) {
+        event.preventDefault();
+
+        PH.state.inbox.selected += 1;
+        render();
+      };
+    }
+  }
+};
+
+PH.afterLoad(render);
 </script>
-
-<!--
-    <div class="header">
-      <div class="row">
-        <div class="col-lg-6 text-left">
-          <a href="<%= root_url %>" style="font-family: 'Geo',sans-serif; font-size: larger">
-            <img src="http://phantasma.io/img/phantasma_monochrome.svg" width="32" style="margin-right: 10px" />PHANTASMA PROTOCOL</a>
-        </div>
-
-        <% if controller_name == 'main' %>
-          <div class="col-lg-6 text-right" id='nav-menu' style="display: none;">
-            <a href="#" onclick="event.preventDefault(); PH.loadDummyData()" style="color: blue; background: white">Load dummy data</a>
-
-            <div class="btn-group">
-              <button type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <%= action_name == 'subs' ? 'Subscribers' : (action_name == 'wallet' ? 'Payments' : action_name) %>
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="<%= inbox_url %>">Inbox</a>
-                <a class="dropdown-item" href="<%= wallet_url %>">Payments</a>
-                <a class="dropdown-item" href="<%= files_url %>">Files</a>
-                <a class="dropdown-item" href="<%= subs_url %>">Subscribers</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">NEO Address</a>
-                <a class="dropdown-item" href="#">Forget me</a>
-              </div>
-            </div>
-
-            <div class="btn-group" style="margin-left: 8px">
-              <button id="walletListBtn" type="button" class="btn nav-btn dropdown-toggle ph-classentity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                demo@phantasma.io
-              </button>
-              <div class="dropdown-menu" id="walletList">
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" id="add-mailbox" href="#">Add Mailbox</a>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="container">
-        <%= yield %>
-      </div>
-    </div>
-  </body>
-</html>
-
-<script>
-PH.afterLoad(function() {
-  var elem = document.getElementById('nav-menu');
-  if (elem && typeof(Storage) !== "undefined") {
-    elem.style.display = 'block';
-  }
-
-  elem = document.getElementById("walletListBtn");
-  elem.innerHTML = PH.mainWallet === null || PH.mainWallet === undefined || PH.mainWallet === -1 ? 'Add Mailbox' : PH.wallets[PH.mainWallet].name;
-
-  window.selectWalletBtnClk = function(event) {
-    event.preventDefault();
-
-    var wallet = parseInt(event.target.getAttribute('data-value'));
-
-    PH.selectWallet(wallet);
-  }
-
-  elem = document.getElementById('walletList');
-  for (var i = PH.wallets.length - 1; i >= 0; --i) {
-    elem.innerHTML = '<a class="dropdown-item" href="#" onclick="selectWalletBtnClk(event)" data-value="' + i + '">' + PH.wallets[i].name + '</a>' + elem.innerHTML;
-  }
-});
-</script>
--->
