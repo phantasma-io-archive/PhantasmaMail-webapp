@@ -37,13 +37,7 @@ if (PH.wallets.length === 0) {
 
 <script>
 PH.afterLoad(function() {
-  document.getElementById('add-mailbox').addEventListener('click', function(elem) {
-    elem.preventDefault();
-
-    $('#firstWallet').modal();
-  });
-
-  if (PH.wallets.length === 0) {
+  if (PH.state.wallets.length === 0) {
       $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
   }
 });
