@@ -7,23 +7,25 @@ if (PH.state.wallets.length === 0) {
       var walletPrivKey = document.getElementById('wallet_priv_key').value;
       var friendlyName = document.getElementById('friendly_name').value;
 
-      var wallet = neonJs.default.create.account(walletPrivKey);
+      var wallet = Neon.create.account(walletPrivKey);
 
       var data = {
                    name: friendlyName || 'My first wallet',
-                   object: wallet,
                    address: wallet.getPublicKey(),
                    privateKey: walletPrivKey
                  };
 
+      PH.neoWallet = wallet;
       PH.state.wallets.push(data);
       PH.state.mainWallet = PH.state.wallets.length - 1;
+
+      window.render();
+      $("#firstWallet").modal('hide');
+
+      PH.contract.registerMailbox(friendlyName);
     } catch (e) {
       document.getElementById('alert-area').style.display = 'block';
     }
-
-    window.render();
-    $("#firstWallet").modal('hide');
   }
 }
 </script>
