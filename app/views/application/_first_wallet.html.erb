@@ -1,12 +1,29 @@
 <script>
-if (PH.wallets.length === 0) {
+if (PH.state.wallets.length === 0) {
   addWallet = function(event) {
-    var walletPrivKey = document.getElementById('wallet_priv_key').value;
-    var walletEmail = document.getElementById('wallet_email').value;
+    document.getElementById('alert-area').style.display = 'none';
 
-    if (PH.addWallet(walletEmail, walletPrivKey)) {
-      window.location = '<%= inbox_url %>';
+    try {
+      var walletPrivKey = document.getElementById('wallet_priv_key').value;
+      var friendlyName = document.getElementById('friendly_name').value;
+
+      var wallet = neonJs.default.create.account(walletPrivKey);
+
+      var data = {
+                   name: friendlyName || 'My first wallet',
+                   object: wallet,
+                   address: wallet.getPublicKey(),
+                   privateKey: walletPrivKey
+                 };
+
+      PH.state.wallets.push(data);
+      PH.state.mainWallet = PH.state.wallets.length - 1;
+    } catch (e) {
+      document.getElementById('alert-area').style.display = 'block';
     }
+
+    window.render();
+    $("#firstWallet").modal('hide');
   }
 }
 </script>
@@ -16,17 +33,24 @@ if (PH.wallets.length === 0) {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="firstWalletLabel">First Phantasma wallet</h5>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="wallet_priv_key" class="control-label">Private key (hex-format, 32 bytes)</label>
-          <input type="password" required class="form-control select2-offscreen" id="wallet_priv_key" name="wallet_priv_key" placeholder="Private key" />
-        </div>
 
-        <div class="form-group">
-          <label for="wallet_email" class="control-label">Email</label>
-          <input type="email" required class="form-control" id="wallet_email" name="wallet_email" placeholder="Email" />
+        <div class="alert alert-danger" role="alert" id="alert-area" style="display: none">
+          The wallet check failed. Please check your address and try again.
         </div>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="wallet_priv_key" class="control-label">Private key (hex-format, 64 characters)</label>
+            <input type="password" required class="form-control select2-offscreen" id="wallet_priv_key" name="wallet_priv_key" placeholder="Private key" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="friendly_name" class="control-label">Friendly name (optional)</label>
+            <input type="text" class="form-control" id="friendly_name" name="friendly_name" placeholder="My first wallet" autocomplete="off" />
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" onclick="addWallet(event)" class="btn pretty-btn">Add</button>
@@ -37,6 +61,8 @@ if (PH.wallets.length === 0) {
 
 <script>
 PH.afterLoad(function() {
+  document.getElementById('alert-area').style.display = 'none';
+
   if (PH.state.wallets.length === 0) {
       $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
   }

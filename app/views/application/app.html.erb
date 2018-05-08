@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-md-4 mail-left">
           <div class="sidebar-item" style="display: flex">
-            <img src="https://phantasma.io/img/phantasma_logo.svg" width="32" style="margin-right: 10px" /> <span class="current_identity">demo@phantasma.io</span>
+            <img src="https://phantasma.io/img/phantasma_logo.svg" width="32" style="margin-right: 10px" /> <span class="current_identity"></span>
           </div>
 
           <div class="sidebar-item">
@@ -34,11 +34,11 @@
 
           <div class="sidebar-divider"></div>
 
-          <div class="sidebar-item selectable">
+          <div id="mailSection"  class="sidebar-item selectable">
             <i class="fa fa-envelope"></i>Mail
           </div>
 
-          <div class="sidebar-item selectable">
+          <div id="walletSection"  class="sidebar-item selectable">
             <i class="fa fa-connectdevelop"></i>Wallet
           </div>
 <!--
@@ -59,7 +59,7 @@
               <div class="input-group-prepend">
                 <span id="mail-search-submit" class="input-group-text"><i class="fa fa-search"></i></span>
               </div>
-              <input type="text" class="form-control" id="mail-search" placeholder="Search Mail" required="true">
+              <input type="text" class="form-control" id="mail-search" placeholder="Search Mail" required="true" autocomplete="off">
             </div>
           </div>
 
@@ -95,6 +95,7 @@ proof-of-work chain as proof of what happened while they were gone.
 </body>
 
 <%= render "compose" %>
+<%= render "first_wallet" %>
 
 <script>
 var setWindowSize = function() {
@@ -111,23 +112,29 @@ window.render = function() {
   PH.saveData();
 
   // Nav tab identity
-  document.getElementsByClassName('current_identity')[0].innerHTML = PH.state.wallets[PH.state.mainWallet].name;
+  if (PH.state.mainWallet !== -1) {
+    document.getElementsByClassName('current_identity')[0].innerHTML = PH.state.wallets[PH.state.mainWallet].name;
+  }
 
   // Section tab selected
   document.getElementById(PH.state.section + 'Section').className += ' selected';
 
+  document.getElementById(PH.state.topSection + 'Section').className += ' selected';
+
   // Section tab links
-  /*
   var elems = document.getElementsByClassName('selectable');
   for (var i = 0; i < elems.length; ++i) {
     elems[i].onclick = function(event) {
       event.preventDefault();
+
+      alert('Disabled for now');
+      /*
       var section = event.target.id.replace('Section', '');
       PH.state.section = section;
       render();
+      */
     };
   }
-  */
 
   // Center pane content
   var content = "";
