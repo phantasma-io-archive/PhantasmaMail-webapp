@@ -2,7 +2,7 @@
   "name": "app",
   "private": true,
   "dependencies": {
-    "@cityofzion/neon-js": "^3.5.0",
+    "@cityofzion/neon-js": "^3.7.0",
     "jquery": "^3.3.1"
   }
 }

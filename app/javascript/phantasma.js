@@ -105,7 +105,7 @@ window.PH = {
           operation: 'registerMailbox',
           args: [
             Neon.u.reverseHex(Neon.u.str2hexstring(PH.neoWallet.address)),
-            Neon.u.str2hexstring(friendly_name)
+            Neon.u.reverseHex(Neon.u.str2hexstring(friendly_name))
           ]
         },
         account: PH.neoWallet,
@@ -121,13 +121,21 @@ window.PH = {
       });
     },
 
+    getBalance: function(callback) {
+      neonJs.api.neoscan.getBalance('TestNet', PH.neoWallet.address).then(res => {
+        console.log(res.assets);
+      });
+    },
+
     getMailCount: function(callback) {
       config = {
         net: 'TestNet',
         script: {
           scriptHash: 'de1a53be359e8be9f3d11627bcca40548a2d5bc1',
           operation: 'getMailCount',
-          args: [Neon.u.str2hexstring(PH.getCurrentWallet().name)]
+          args: [
+            Neon.u.reverseHex(Neon.u.str2hexstring(PH.getCurrentWallet().name))
+          ]
         },
         account: PH.neoWallet,
         gas: 0
