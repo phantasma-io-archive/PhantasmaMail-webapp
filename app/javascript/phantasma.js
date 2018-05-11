@@ -97,15 +97,15 @@ window.PH = {
   },
 
   contract: {
-    registerMailbox: function(friendly_name, callback) {
+    registerMailbox: function(friendlyName, callback) {
       config = {
         net: 'TestNet',
         script: {
           scriptHash: 'de1a53be359e8be9f3d11627bcca40548a2d5bc1',
           operation: 'registerMailbox',
           args: [
-            Neon.u.reverseHex(Neon.u.str2hexstring(PH.neoWallet.address)),
-            Neon.u.reverseHex(Neon.u.str2hexstring(friendly_name))
+            Neon.create.contractParam('Address', PH.neoWallet.address),
+            Neon.create.contractParam('String', friendlyName),
           ]
         },
         account: PH.neoWallet,
