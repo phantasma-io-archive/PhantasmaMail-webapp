@@ -423,8 +423,20 @@ body.main2 {
     }
 
     .sort {
-      cursor: pointer;
       margin-bottom: 2rem;
+
+      .refresh-inbox {
+        margin-right: 0.5rem;
+
+        i.fa-spin {
+          opacity: 0.4;
+          cursor: default;
+        }
+      }
+
+      .pull-right {
+        cursor: pointer;
+      }
 
       .control {
         margin-left: 0.5rem;

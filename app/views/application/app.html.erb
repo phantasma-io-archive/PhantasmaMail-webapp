@@ -49,14 +49,14 @@
           <div class="sidebar-divider"></div>
 
           <div class="sidebar-item">
-            <a href="#"><i class="fa fa-sign-out"></i>Forget me</a>
+            <a id="forgetMeBtn" href="#"><i class="fa fa-sign-out"></i>Forget me</a>
           </div>
         </div>
 
         <div class="col-md mail-center">
           <div class="search">
             <div class="input-group">
-              <div class="input-group-prepend">
+              <div class="input-group-prepend" onclick="alert('TODO')">
                 <span id="mail-search-submit" class="input-group-text"><i class="fa fa-search"></i></span>
               </div>
               <input type="text" class="form-control" id="mail-search" placeholder="Search Mail" required="true" autocomplete="off">
@@ -65,7 +65,9 @@
 
           <div class="clearfix sort">
             <div class="pull-right">
-              <span class="sel">Sort: Newest First</span><span class="control"><i class="fa fa-chevron-down"></i></span>
+              <a class="refresh-inbox" href="#"><i class="fa fa-refresh"></i></a>
+
+              <span onclick="alert('TODO')" class="sel">Sort: Newest First</span><span onclick="alert('TODO')" class="control"><i class="fa fa-chevron-down"></i></span>
             </div>
           </div>
 
@@ -127,13 +129,21 @@ window.render = function() {
     elems[i].onclick = function(event) {
       event.preventDefault();
 
-      alert('Disabled for now');
+      alert('TODO');
       /*
       var section = event.target.id.replace('Section', '');
       PH.state.section = section;
       render();
       */
     };
+  }
+
+  // Left pane - forget me button
+  document.getElementById('forgetMeBtn').onclick = function(event) {
+    event.preventDefault();
+
+    localStorage.clear();
+    window.location.href = '/';
   }
 
   // Center pane content
@@ -160,6 +170,24 @@ window.render = function() {
     }.bind(i);
   }
 
+  // Center pane - refresh inbox button
+  document.getElementsByClassName('refresh-inbox')[0].onclick = function(event) {
+    event.preventDefault();
+
+    var icon = document.querySelector('.refresh-inbox i.fa');
+    if (icon.className.indexOf('fa-spin') === -1) {
+      // Inactive; activate and fetch inbox
+      PH.contract.fetchInbox(function() {
+        render(); // rerender what is needed
+        var icon = document.querySelector('.refresh-inbox i.fa');
+        icon.className = icon.className.replace(' fa-spin', '');
+      });
+      icon.className += ' fa-spin';
+    } else {
+      // Active; do nothing
+    }
+  };
+
   // Right pane
   if (PH.state.inbox.selected === -1) {
     var leftPane = document.getElementsByClassName('mail-left')[0];
@@ -178,7 +206,7 @@ window.render = function() {
     var content = "";
     var message = PH.state.inbox.items[PH.state.inbox.selected];
 
-    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.time + '</div><div class="people">' + message.from + ' <span class="ligature">to</span> ' + message.to + '</div><div class="title">' + message.title + '</div><div class="body">' + message.body + '</div></div>';
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.time + '</div><div class="people">' + message.from + ' <span class="ligature">to</span> ' + message.to + '</div><div class="title">' + message.title + '</div><div class="body">' + message.body + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows

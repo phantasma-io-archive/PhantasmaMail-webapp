@@ -7,16 +7,17 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="recipient" class="control-label">Recipient</label>
-          <input type="text" required class="form-control" id="recipient" name="recipient" placeholder="Phantasma address" autocomplete="off" />
+          <input type="text" required class="form-control" id="composeRecipient" name="recipient" placeholder="Phantasma address" autocomplete="off" />
         </div>
 
         <div class="form-group">
           <label for="message" class="control-label">Message</label>
-          <input type="text" required class="form-control" id="message" name="message" placeholder="Welcome to Phantasma" autocomplete="off" />
+          <input type="text" required class="form-control" id="composeMessage" name="message" placeholder="Welcome to Phantasma" autocomplete="off" />
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="addWallet(event)" class="btn pretty-btn">Send</button>
+        <button id="composeCancelBtn" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="composeSubmitBtn" type="button" class="btn btn-primary">Send</button>
       </div>
     </div>
   </div>
@@ -27,7 +28,24 @@ PH.afterLoad(function() {
   document.getElementById('composeBtn').addEventListener('click', function(elem) {
     elem.preventDefault();
 
-    $('#compose').modal();
+    $('#compose').modal({ backdrop: 'static', keyboard: false });
   });
+
+  document.getElementById('composeSubmitBtn').onclick = function(event) {
+    event.preventDefault();
+
+    document.getElementById('composeCancelBtn').className += ' disabled';
+    document.getElementById('composeSubmitBtn').className += ' disabled';
+
+    var recipient = document.getElementById('composeRecipient').value;
+    var message = document.getElementById('composeMessage').value;
+
+    PH.contract.sendMessage(recipient, message, function() {
+      document.getElementById('composeCancelBtn').className = document.getElementById('composeCancelBtn').className.replace(' disabled', '');
+      document.getElementById('composeSubmitBtn').className = document.getElementById('composeSubmitBtn').className.replace(' disabled', '');
+
+      $("#compose").modal('hide');
+    });
+  };
 });
 </script>
