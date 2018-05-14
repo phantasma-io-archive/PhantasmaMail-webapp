@@ -106,8 +106,8 @@ window.PH = {
           scriptHash: 'de1a53be359e8be9f3d11627bcca40548a2d5bc1',
           operation: 'registerMailbox',
           args: [
-            Neon.create.contractParam('Address', PH.neoWallet.address),
-            Neon.create.contractParam('String', friendlyName),
+            neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+            neonJs.sc.ContractParam.byteArray('6464724724654655', 'string'),
           ]
         },
         account: PH.neoWallet,
