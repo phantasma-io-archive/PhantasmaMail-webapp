@@ -1,0 +1,55 @@
+
+var sb = Neon.create.scriptBuilder();
+sb.emitAppCall('de1a53be359e8be9f3d11627bcca40548a2d5bc1', 'registerMailbox', [
+      neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+      neonJs.sc.ContractParam.byteArray('6464724724654655', 'string'),
+    ]);
+neonJs.rpc.Query.invokeScript(sb.str).execute("https://seed1.neo.org:20331").then((a) => { console.log(a) });
+
+
+
+
+
+
+
+http://192.168.1.148:30333
+
+
+curl \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"jsonrpc":"2.0","id":"123","method":"getversion","params":[]}' \
+http://192.168.1.148:30333
+
+
+
+
+
+var privNetConfig = {
+  name: 'PrivateNet',
+  extra: {
+    neonDB: "http://192.168.1.148:5000",
+    neoscan: 'http://192.168.1.148:30333/api/main_net'
+  }
+}
+
+var privateNet = new neonJs.rpc.Network(privNetConfig)
+Neon.add.network(privateNet)
+
+config = {
+  net: 'PrivateNet',
+  script: {
+    scriptHash: '1a9ed054b79494ce2688dcd135add9609a30e34a',
+    operation: 'GetMailboxFromAddress',
+    args: [
+      neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+   //   neonJs.sc.ContractParam.byteArray('6464724724846584654655', 'string'),
+    ]
+  },
+  account: PH.neoWallet,
+  gas: 0
+};
+
+Neon.doInvoke(config).then(res => {
+  console.log(res.response);
+});
