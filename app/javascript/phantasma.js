@@ -34,6 +34,7 @@ window.PH = {
     topSection: 'mail',
     inbox: {
       items: [],
+      filter: '',
       selected: -1
     }
   },
@@ -43,6 +44,11 @@ window.PH = {
   loaded: false,
 
   saveData: function() {
+    var filtered = PH.itemsFiltered();
+    if (PH.state.inbox.selected >= filtered.length) {
+      PH.state.inbox.selected = filtered.length - 1;
+    }
+
     localStorage.setItem('state', JSON.stringify(PH.state));
   },
 
@@ -92,6 +98,19 @@ window.PH = {
     if (str.length <= length) { return str; }
 
     return str.substring(0, length - 3) + '...';
+  },
+
+  itemsFiltered: function() {
+    var filter = PH.state.inbox.filter.toLowerCase();
+    if (filter.length === 0) { return PH.state.inbox.items; }
+
+    return PH.state.inbox.items.filter(function(item) {
+      return item.title.toLowerCase().indexOf(filter) !== -1 ||
+             item.body.toLowerCase().indexOf(filter) !== -1 ||
+             item.from.toLowerCase().indexOf(filter) !== -1 ||
+             item.from_name.toLowerCase().indexOf(filter) !== -1 ||
+             item.to.toLowerCase().indexOf(filter) !== -1;
+    });
   },
 
   getCurrentWallet: function() {

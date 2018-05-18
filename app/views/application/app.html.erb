@@ -56,7 +56,7 @@
         <div class="col-md mail-center">
           <div class="search">
             <div class="input-group">
-              <div class="input-group-prepend" onclick="alert('TODO')">
+              <div class="input-group-prepend">
                 <span id="mail-search-submit" class="input-group-text"><i class="fa fa-search"></i></span>
               </div>
               <input type="text" class="form-control" id="mail-search" placeholder="Search Mail" required="true" autocomplete="off">
@@ -148,8 +148,9 @@ window.render = function() {
 
   // Center pane content
   var content = "";
-  for (var i = 0; i < PH.state.inbox.items.length; ++i) {
-    var elem = PH.state.inbox.items[i];
+  var itemsFiltered = PH.itemsFiltered();
+  for (var i = 0; i < itemsFiltered.length; ++i) {
+    var elem = itemsFiltered[i];
     var timeStr = new Date(elem.time * 1000).toLocaleDateString();
     content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.title) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.body, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.from_name) + '</b></span><span class="address">' + PH.trunc(elem.from) + '</span></span><span class="pull-right address">' + PH.trunc(elem.to) + '</span></div></div>';
   }
@@ -169,6 +170,32 @@ window.render = function() {
       render();
     }.bind(i);
   }
+
+  // Center pane - mail search
+  document.getElementById('mail-search').value = PH.state.inbox.filter;
+  var searchFilterStart = function() {
+    var filterValue = document.getElementById('mail-search').value;
+    if (filterValue.toLowerCase() === PH.state.inbox.filter.toLowerCase()) { return; }
+
+    PH.state.inbox.filter = filterValue;
+    render();
+
+    var icon = document.querySelector('.refresh-inbox i.fa');
+    if (icon.className.indexOf('fa-spin') === -1) {
+      // Inactive; activate and fetch inbox
+      setTimeout(function() {
+        var icon = document.querySelector('.refresh-inbox i.fa');
+        icon.className = icon.className.replace(' fa-spin', '');
+      }, 300);
+      icon.className += ' fa-spin';
+    }
+  };
+  document.getElementById('mail-search').addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {
+        searchFilterStart();
+    }
+  });
+  document.getElementById('mail-search-submit').addEventListener('click', searchFilterStart);
 
   // Center pane - refresh inbox button
   document.getElementsByClassName('refresh-inbox')[0].onclick = function(event) {
@@ -204,7 +231,7 @@ window.render = function() {
     var rightPane = document.getElementsByClassName('mail-right')[0];
     rightPane.style.display = null;
     var content = "";
-    var message = PH.state.inbox.items[PH.state.inbox.selected];
+    var message = itemsFiltered[PH.state.inbox.selected];
 
     var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.time + '</div><div class="people">' + message.from + ' <span class="ligature">to</span> ' + message.to + '</div><div class="title">' + message.title + '</div><div class="body">' + message.body + '</div></div>';
     rightPane.innerHTML = content;
@@ -220,7 +247,7 @@ window.render = function() {
         render();
       };
     }
-    if (PH.state.inbox.selected === PH.state.inbox.items.length - 1) {
+    if (PH.state.inbox.selected === itemsFiltered.length - 1) {
       document.getElementById('nextMsg').className += " disabled";
     } else {
       document.getElementById('nextMsg').onclick = function(event) {
