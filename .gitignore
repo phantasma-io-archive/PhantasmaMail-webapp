@@ -26,3 +26,5 @@
 /public/assets/*
 
 /app/assets/javascripts/bundle.js
+
+*.secret

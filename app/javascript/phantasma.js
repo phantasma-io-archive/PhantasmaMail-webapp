@@ -118,8 +118,10 @@ window.PH = {
   },
 
   contract: {
+    // See https://github.com/PhantasmaProtocol/PhantasmaNeo/blob/version2/PhantasmaContract/Contract.cs
     scriptHash: 'ed07cffad18f1308db51920d99a2af60ac66a7b3',
 
+    // Start of test functions:
     tranferGas: function(destAddress, gasAmount /* float */, callback) {
       var intent = neonJs.api.makeIntent({ GAS: gasAmount }, destAddress);
 
@@ -131,13 +133,6 @@ window.PH = {
 
       Neon.sendAsset(config)
       .then(res => {
-        console.log(res);
-
-        if (callback) {
-          callback(res);
-        }
-      })
-      .catch(res => {
         console.log(res);
 
         if (callback) {
@@ -162,13 +157,6 @@ window.PH = {
         if (callback) {
           callback(res);
         }
-      })
-      .catch(res => {
-        console.log(res);
-
-        if (callback) {
-          callback(res);
-        }
       });
     },
 
@@ -180,13 +168,6 @@ window.PH = {
 
       Neon.claimGas(config)
       .then(res => {
-        console.log(res);
-
-        if (callback) {
-          callback(res);
-        }
-      })
-      .catch(res => {
         console.log(res);
 
         if (callback) {
@@ -210,13 +191,6 @@ window.PH = {
 
         if (callback) {
           callback(Neon.u.hexstring2str(res.result.stack[0].value));
-        }
-      })
-      .catch(res => {
-        console.log(res);
-
-        if (callback) {
-          callback(null);
         }
       });
     },
@@ -246,63 +220,192 @@ window.PH = {
       });
     },
 
-    // TODO: not working yet
-    registerMailbox: function(friendlyName, callback) {
-      config = {
+    validateAddress: function(address, callback) {
+      var props = {
+        scriptHash: PH.contract.scriptHash,
+        operation: 'validateAddress',
+        args: [
+          neonJs.sc.ContractParam.byteArray(address, 'address')
+        ]
+      };
+
+      var script = Neon.create.script(props);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        console.log(res);
+
+        if (callback) {
+          callback(res.result.stack[0].value == '1');
+        }
+      });
+    },
+
+    validateMailboxName: function(callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
+      var props = {
+        scriptHash: PH.contract.scriptHash,
+        operation: 'validateMailboxName',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string'),
+        ]
+      };
+
+      var script = Neon.create.script(props);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        console.log(res);
+
+        if (callback) {
+          callback(Neon.u.hexstring2str(res.result.stack[0].value));
+        }
+      });
+    },
+    // End of test functions.
+
+    registerMailbox: function(callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
+      var config = {
         net: 'MainNet',
-        script: {
+        script: Neon.create.script({
           scriptHash: PH.contract.scriptHash,
           operation: 'registerMailbox',
           args: [
             neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
-            neonJs.sc.ContractParam.byteArray('6464724724654655', 'string'),
+            neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string'),
           ]
-        },
+        }),
         account: PH.neoWallet,
         gas: 0
-      };
+      }
 
       Neon.doInvoke(config).then(res => {
+        console.log(res)
+
+        if (callback) {
+          callback();
+        }
+      })
+    },
+
+    getMailboxFromAddress: function(callback) {
+      var props = {
+        scriptHash: PH.contract.scriptHash,
+        operation: 'getMailboxFromAddress',
+        args: [
+          neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+        ]
+      };
+
+      var script = Neon.create.script(props);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
         console.log(res);
 
         if (callback) {
-          // TODO
-          callback();
+          var ret = null;
+          try {
+            ret = Neon.u.hexstring2str(res.result.stack[0].value);
+            if (ret.length === 0) {
+              ret = null;
+            }
+          } catch(e) {}
+
+          callback(ret);
         }
       });
     },
 
-    // TODO: not working yet
-    getBalance: function(callback) {
-      neonJs.api.neoscan.getBalance('MainNet', PH.neoWallet.address).then(res => {
-        console.log(res.assets);
-      });
-    },
+    getAddressFromMailbox: function(callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
 
-    // TODO: not working yet
-    getMailCount: function(callback) {
-      config = {
-        net: 'MainNet',
-        script: {
-          scriptHash: PH.contract.scriptHash,
-          operation: 'getMailCount',
-          args: [
-            Neon.u.reverseHex(Neon.u.str2hexstring(PH.getCurrentWallet().name))
-          ]
-        },
-        account: PH.neoWallet,
-        gas: 0
+      var props = {
+        scriptHash: PH.contract.scriptHash,
+        operation: 'getAddressFromMailbox',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string')
+        ]
       };
 
-      Neon.doInvoke(config).then(res => {
-        // TODO:
+      var script = Neon.create.script(props);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        console.log(res);
 
         if (callback) {
-          // TODO
-          callback(dummyContent.length);
+          var ret = null;
+          try {
+            ret = Neon.u.str2ab(res.result.stack[0].value);
+            if (ret.length === 0) {
+              ret = null;
+            }
+          } catch(e) {}
+
+          callback(ret);
         }
       });
     },
+
+    getInboxCount: function(callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
+      var props = {
+        scriptHash: PH.contract.scriptHash,
+        operation: 'getInboxCount',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string')
+        ]
+      };
+
+      var script = Neon.create.script(props);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        console.log(res);
+
+        if (callback) {
+          var ret = 0;
+          try {
+            ret = parseInt(res.result.stack[0].value);
+          } catch(e) {}
+
+          callback(ret);
+        }
+      });
+    },
+
+    sendMessage: function(destFriendlyName, message, callback) {
+      var config = {
+        net: 'MainNet',
+        script: Neon.create.script({
+          scriptHash: PH.contract.scriptHash,
+          operation: 'sendMessage',
+          args: [
+            neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+            neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(destFriendlyName), 'string'),
+            neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(btoa(message)), 'string'),
+          ]
+        }),
+        account: PH.neoWallet,
+        gas: 0
+      }
+
+      Neon.doInvoke(config).then(res => {
+        console.log(res)
+
+        if (callback) {
+          callback(res);
+        }
+      });
+    },
+
+
+
 
     // TODO: not working yet
     getMailContent: function(index, callback) {
@@ -324,7 +427,8 @@ window.PH = {
 
     // TODO: not working yet
     fetchInbox: function(callback) {
-      PH.contract.getMailCount(function(count) {
+      //PH.contract.getMailCount(function(count) {
+      (function() {
         recursiveInboxFetch = function(acc1, index1, count1, callback1) {
           if (count1 === index1) {
             // Finished
@@ -342,7 +446,8 @@ window.PH = {
           });
         };
         recursiveInboxFetch([], 0, count, callback);
-      });
+      })();
+//      });
     }
   }
 };
