@@ -4,6 +4,8 @@ Access your email on the Phantasma network everytime everywhere!
 
 ## Setup
 
+Copy `.env.example` to `.env` and fill it in.
+
 Install `rvm`/`rbenv`, `ruby 2.4.2` and `bundler`. Then run `bundle install`.
 
 Install `nodejs`, `npm` and run `npm install`, and install browserify globally for your version of node: `npm install -g browserify`.

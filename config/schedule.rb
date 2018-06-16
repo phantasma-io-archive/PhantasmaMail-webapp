@@ -6,12 +6,5 @@
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"
-set :output, 'log/cron.log'
-
-env :PATH, ENV['PATH']
-
-every 5.minutes do
-  rake 'upkeep:start'
-end
 
 # Learn more: http://github.com/javan/whenever

@@ -18,12 +18,8 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
-gem 'bugsnag'
-
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
-
-gem 'whenever'
 
 gem 'jquery-rails'
 
@@ -32,9 +28,3 @@ gem 'font-awesome-rails'
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
-
-group :development do
-  gem 'pry-rails'
-  gem 'rubocop'
-  gem 'rubocop-rspec'
-end

@@ -1,9 +1,5 @@
 class ApplicationController < ActionController::Base
-  def landing
+  def landing; end
 
-  end
-
-  def app
-
-  end
+  def app; end
 end
