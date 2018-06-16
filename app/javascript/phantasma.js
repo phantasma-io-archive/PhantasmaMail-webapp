@@ -265,9 +265,7 @@ window.PH = {
     },
     // End of test functions.
 
-    registerMailbox: function(callback) {
-      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
-
+    registerMailbox: function(friendlyName, callback) {
       var config = {
         net: 'MainNet',
         script: Neon.create.script({
@@ -283,10 +281,13 @@ window.PH = {
       }
 
       Neon.doInvoke(config).then(res => {
-        console.log(res)
+        var result = false;
+        try {
+          result = res.response.result && res.response.txid.length > 0;
+        } catch(e) {}
 
         if (callback) {
-          callback();
+          callback(result);
         }
       })
     },
@@ -304,8 +305,6 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           var ret = null;
           try {
