@@ -244,7 +244,7 @@ window.PH = {
     },
     // End of test functions.
 
-    registerMailbox: function(friendlyName, callback) {
+    registerMailbox: function(friendlyName, optCallback) {
       var config = {
         net: 'MainNet',
         script: Neon.create.script({
@@ -260,13 +260,13 @@ window.PH = {
       }
 
       Neon.doInvoke(config).then(res => {
-        var result = false;
-        try {
-          result = res.response.result && res.response.txid.length > 0;
-        } catch(e) {}
+        if (optCallback) {
+          var result = false;
+          try {
+            result = res.response.result && res.response.txid.length > 0;
+          } catch(e) {}
 
-        if (callback) {
-          callback(result);
+          optCallback(result);
         }
       })
     },
@@ -284,17 +284,15 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          var ret = null;
-          try {
-            ret = Neon.u.hexstring2str(res.result.stack[0].value);
-            if (ret.length === 0) {
-              ret = null;
-            }
-          } catch(e) {}
+        var ret = null;
+        try {
+          ret = Neon.u.hexstring2str(res.result.stack[0].value);
+          if (ret.length === 0) {
+            ret = null;
+          }
+        } catch(e) {}
 
-          callback(ret);
-        }
+        callback(ret);
       });
     },
 
@@ -311,20 +309,17 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          // TODO: currently not working, return of getAddressFromMailbox is nonsensical
-          return callback('N/A');
+        var ret = null;
+        try {
+          ret = res.result.stack[0].value;
+          if (ret.length === 0) {
+            ret = null;
+          }
 
-          var ret = null;
-          try {
-            ret = res.result.stack[0].value;
-            if (ret.length === 0) {
-              ret = null;
-            }
-          } catch(e) {}
+          ret = Neon.create.account(ret).address;
+        } catch(e) {}
 
-          callback(ret);
-        }
+        callback(ret);
       });
     },
 
@@ -343,17 +338,15 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          var ret = 0;
-          try {
-            ret = parseInt(res.result.stack[0].value);
-            if (isNaN(ret) || ret < 0) {
-              ret = 0;
-            }
-          } catch(e) {}
+        var ret = 0;
+        try {
+          ret = parseInt(res.result.stack[0].value);
+          if (isNaN(ret) || ret < 0) {
+            ret = 0;
+          }
+        } catch(e) {}
 
-          callback(ret);
-        }
+        callback(ret);
       });
     },
 
@@ -373,31 +366,29 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          var ret = null;
-          try {
-            ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
-            if (ret.constructor != Object) {
-              ret = null;
-            }
-          } catch(e) {}
-
-          if (!ret) {
-            console.warn('Malformed message');
-
-            ret = {
-              subject: 'ERROR',
-              date: '2018-01-01T10:10:10.203Z',
-              content: 'ERROR',
-              fromAddress: 'ERROR',
-              fromInbox: 'ERROR',
-              toAddress: PH.neoWallet.address,
-              toInbox: friendlyName
-            };
+        var ret = null;
+        try {
+          ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+          if (ret.constructor != Object) {
+            ret = null;
           }
+        } catch(e) {}
 
-          callback(ret);
+        if (!ret) {
+          console.warn('Malformed message');
+
+          ret = {
+            subject: 'ERROR',
+            date: '2018-01-01T10:10:10.203Z',
+            content: 'ERROR',
+            fromAddress: 'ERROR',
+            fromInbox: 'ERROR',
+            toAddress: PH.neoWallet.address,
+            toInbox: friendlyName
+          };
         }
+
+        callback(ret);
       });
     },
 
@@ -416,17 +407,15 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          var ret = 0;
-          try {
-            ret = parseInt(res.result.stack[0].value);
-            if (isNaN(ret) || ret < 0) {
-              ret = 0;
-            }
-          } catch(e) {}
+        var ret = 0;
+        try {
+          ret = parseInt(res.result.stack[0].value);
+          if (isNaN(ret) || ret < 0) {
+            ret = 0;
+          }
+        } catch(e) {}
 
-          callback(ret);
-        }
+        callback(ret);
       });
     },
 
@@ -446,35 +435,33 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        if (callback) {
-          var ret = null;
-          try {
-            ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
-            if (ret.constructor != Object) {
-              ret = null;
-            }
-          } catch(e) {}
-
-          if (!ret) {
-            console.warn('Malformed message');
-
-            ret = {
-              subject: 'ERROR',
-              date: '2018-01-01T10:10:10.203Z',
-              content: 'ERROR',
-              fromAddress: 'ERROR',
-              fromInbox: 'ERROR',
-              toAddress: PH.neoWallet.address,
-              toInbox: friendlyName
-            };
+        var ret = null;
+        try {
+          ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+          if (ret.constructor != Object) {
+            ret = null;
           }
+        } catch(e) {}
 
-          callback(ret);
+        if (!ret) {
+          console.warn('Malformed message');
+
+          ret = {
+            subject: 'ERROR',
+            date: '2018-01-01T10:10:10.203Z',
+            content: 'ERROR',
+            fromAddress: 'ERROR',
+            fromInbox: 'ERROR',
+            toAddress: PH.neoWallet.address,
+            toInbox: friendlyName
+          };
         }
+
+        callback(ret);
       });
     },
 
-    sendMessage: function(subject, content, toInbox, callback) {
+    sendMessage: function(subject, content, toInbox, optCallback) {
       PH.contract.getAddressFromMailbox(toInbox, function(toAddress) {
         if (toAddress) {
           var dat = {
@@ -506,13 +493,13 @@ window.PH = {
           }
 
           Neon.doInvoke(config).then(res => {
-            if (callback) {
+            if (optCallback) {
               var result = false;
               try {
                 result = res.response.result && res.response.txid.length > 0;
               } catch(e) {}
 
-              callback(result);
+              optCallback(result);
             }
           });
         } else {
