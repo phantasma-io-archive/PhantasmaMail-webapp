@@ -15,6 +15,11 @@ window.PH = {
       items: [],
       filter: '',
       selected: -1
+    },
+    outbox: {
+      items: [],
+      filter: '',
+      selected: -1
     }
   },
 
@@ -24,8 +29,9 @@ window.PH = {
 
   saveData: function() {
     var filtered = PH.itemsFiltered();
-    if (PH.state.inbox.selected >= filtered.length) {
-      PH.state.inbox.selected = filtered.length - 1;
+
+    if (PH.state[PH.state.section].selected >= filtered.length) {
+      PH.state[PH.state.section].selected = filtered.length - 1;
     }
 
     localStorage.setItem('state', JSON.stringify(PH.state));
@@ -80,7 +86,7 @@ window.PH = {
   },
 
   itemsFiltered: function() {
-    var items = PH.state.inbox.items.sort(function(a, b) {
+    var items = PH.state[PH.state.section].items.sort(function(a, b) {
       try {
         return b.date.localeCompare(a.date);
       } catch(e) {
@@ -88,7 +94,7 @@ window.PH = {
       }
     });
 
-    var filter = PH.state.inbox.filter.toLowerCase();
+    var filter = PH.state[PH.state.section].filter.toLowerCase();
     if (filter.length === 0) {
       return items;
     }
@@ -377,6 +383,81 @@ window.PH = {
           } catch(e) {}
 
           if (!ret) {
+            console.warn('Malformed message');
+
+            ret = {
+              subject: 'ERROR',
+              date: '2018-01-01T10:10:10.203Z',
+              content: 'ERROR',
+              fromAddress: 'ERROR',
+              fromInbox: 'ERROR',
+              toAddress: PH.neoWallet.address,
+              toInbox: friendlyName
+            };
+          }
+
+          callback(ret);
+        }
+      });
+    },
+
+    getOutboxCount: function(callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
+      var config = {
+        scriptHash: PH.contractScriptHash,
+        operation: 'getOutboxCount',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string')
+        ]
+      };
+
+      var script = Neon.create.script(config);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        if (callback) {
+          var ret = 0;
+          try {
+            ret = parseInt(res.result.stack[0].value);
+            if (isNaN(ret) || ret < 0) {
+              ret = 0;
+            }
+          } catch(e) {}
+
+          callback(ret);
+        }
+      });
+    },
+
+    getOutboxContent: function(number, callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
+      var config = {
+        scriptHash: PH.contractScriptHash,
+        operation: 'getOutboxContent',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string'),
+          neonJs.sc.ContractParam.integer(number + 1)
+        ]
+      };
+
+      var script = Neon.create.script(config);
+
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
+        if (callback) {
+          var ret = null;
+          try {
+            ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+            if (ret.constructor != Object) {
+              ret = null;
+            }
+          } catch(e) {}
+
+          if (!ret) {
+            console.warn('Malformed message');
+
             ret = {
               subject: 'ERROR',
               date: '2018-01-01T10:10:10.203Z',
@@ -455,7 +536,7 @@ window.PH = {
             return;
           }
 
-          console.log('Fetching message #' + (index1 + 1));
+          console.log('Fetching received message #' + (index1 + 1));
           PH.contract.getInboxContent(index1, function(content) {
             acc1.push(content);
 
@@ -464,6 +545,33 @@ window.PH = {
         };
 
         recursiveInboxFetch([], 0, count, callback);
+      });
+    },
+
+    fetchOutbox: function(callback) {
+      PH.contract.getOutboxCount(function(count) {
+        console.log('Found ' + count + ' messages');
+
+        recursiveOutboxFetch = function(acc1, index1, count1, callback1) {
+          if (count1 === index1) {
+            // Finished
+            PH.state.outbox.items = acc1;
+            PH.saveData();
+            if (callback1) {
+              callback1();
+            }
+            return;
+          }
+
+          console.log('Fetching sent message #' + (index1 + 1));
+          PH.contract.getOutboxContent(index1, function(content) {
+            acc1.push(content);
+
+            recursiveOutboxFetch(acc1, index1 + 1, count1, callback1);
+          });
+        };
+
+        recursiveOutboxFetch([], 0, count, callback);
       });
     }
   }

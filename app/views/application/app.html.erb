@@ -16,7 +16,7 @@
             <i class="fa fa-inbox"></i>Inbox
           </div>
 
-          <div id="sentSection" class="sidebar-item selectable">
+          <div id="outboxSection" class="sidebar-item selectable">
             <i class="fa fa-location-arrow"></i>Sent
           </div>
 
@@ -113,6 +113,8 @@ setWindowSize();
 window.addEventListener('resize', setWindowSize);
 
 window.render = function() {
+  console.log('Rendering ' + PH.state.section);
+
   PH.saveData();
 
   // Nav tab identity
@@ -120,25 +122,34 @@ window.render = function() {
     document.getElementsByClassName('current_identity')[0].innerHTML = PH.state.wallets[PH.state.mainWallet].name;
   }
 
+  // Section tab links
+  var elems = document.getElementsByClassName('selectable');
+  for (var i = 0; i < elems.length; ++i) {
+    if (i < 2) {
+      elems[i].onclick = function(event) {
+        event.preventDefault();
+
+        var section = event.target.id.replace('Section', '');
+        PH.state.section = section;
+        render();
+
+        autoFetchItems();
+      };
+    } else {
+      elems[i].onclick = function(event) {
+        event.preventDefault();
+
+        alert('TODO');
+      };
+    }
+
+    elems[i].className = elems[i].className.replace(' selected', '');
+  }
+
   // Section tab selected
   document.getElementById(PH.state.section + 'Section').className += ' selected';
 
   document.getElementById(PH.state.topSection + 'Section').className += ' selected';
-
-  // Section tab links
-  var elems = document.getElementsByClassName('selectable');
-  for (var i = 0; i < elems.length; ++i) {
-    elems[i].onclick = function(event) {
-      event.preventDefault();
-
-      alert('TODO');
-      /*
-      var section = event.target.id.replace('Section', '');
-      PH.state.section = section;
-      render();
-      */
-    };
-  }
 
   // Left pane - forget me button
   document.getElementById('forgetMeBtn').onclick = function(event) {
@@ -164,10 +175,10 @@ window.render = function() {
     container.children[i].onclick = function(event) {
       event.preventDefault();
 
-      if (PH.state.inbox.selected === this + 0) {
-        PH.state.inbox.selected = -1;
+      if (PH.state[PH.state.section].selected === this + 0) {
+        PH.state[PH.state.section].selected = -1;
       } else {
-        PH.state.inbox.selected = this + 0;
+        PH.state[PH.state.section].selected = this + 0;
       }
       render();
     }.bind(i);
@@ -176,12 +187,12 @@ window.render = function() {
   document.getElementById('version-text').innerHTML = 'v.' + PH.version;
 
   // Center pane - mail search
-  document.getElementById('mail-search').value = PH.state.inbox.filter;
+  document.getElementById('mail-search').value = PH.state[PH.state.section].filter;
   var searchFilterStart = function() {
     var filterValue = document.getElementById('mail-search').value;
-    if (filterValue.toLowerCase() === PH.state.inbox.filter.toLowerCase()) { return; }
+    if (filterValue.toLowerCase() === PH.state[PH.state.section].filter.toLowerCase()) { return; }
 
-    PH.state.inbox.filter = filterValue;
+    PH.state[PH.state.section].filter = filterValue;
     render();
 
     var icon = document.querySelector('.refresh-inbox i.fa');
@@ -201,26 +212,29 @@ window.render = function() {
   });
   document.getElementById('mail-search-submit').addEventListener('click', searchFilterStart);
 
-  // Center pane - refresh inbox button
-  document.getElementsByClassName('refresh-inbox')[0].onclick = function(event) {
-    event.preventDefault();
-
+  window.autoFetchItems = function() {
     var icon = document.querySelector('.refresh-inbox i.fa');
     if (icon.className.indexOf('fa-spin') === -1) {
       // Inactive; activate and fetch inbox
-      PH.contract.fetchInbox(function() {
+      var refreshFunc = PH.state.section === 'inbox' ? PH.contract.fetchInbox : PH.contract.fetchOutbox;
+      refreshFunc(function() {
         render(); // rerender what is needed
         var icon = document.querySelector('.refresh-inbox i.fa');
         icon.className = icon.className.replace(' fa-spin', '');
       });
       icon.className += ' fa-spin';
-    } else {
-      // Active; do nothing
     }
+  }
+
+  // Center pane - refresh inbox button
+  document.getElementsByClassName('refresh-inbox')[0].onclick = function(event) {
+    event.preventDefault();
+
+    autoFetchItems();
   };
 
   // Right pane
-  if (PH.state.inbox.selected === -1) {
+  if (PH.state[PH.state.section].selected === -1) {
     var leftPane = document.getElementsByClassName('mail-left')[0];
     leftPane.className = leftPane.className.replace('col-md-4', 'col-md-3');
     var centerPane = document.getElementsByClassName('mail-center')[0];
@@ -235,29 +249,29 @@ window.render = function() {
     var rightPane = document.getElementsByClassName('mail-right')[0];
     rightPane.style.display = null;
     var content = "";
-    var message = itemsFiltered[PH.state.inbox.selected];
+    var message = itemsFiltered[PH.state[PH.state.section].selected];
 
     var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.date + '</div><div class="people">' + message.fromInbox + ' <span class="ligature">to</span> ' + message.toInbox + '</div><div class="title">' + message.subject + '</div><div class="body">' + message.content + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows
-    if (PH.state.inbox.selected === 0) {
+    if (PH.state[PH.state.section].selected === 0) {
       document.getElementById('prevMsg').className += " disabled";
     } else {
       document.getElementById('prevMsg').onclick = function(event) {
         event.preventDefault();
 
-        PH.state.inbox.selected -= 1;
+        PH.state[PH.state.section].selected -= 1;
         render();
       };
     }
-    if (PH.state.inbox.selected === itemsFiltered.length - 1) {
+    if (PH.state[PH.state.section].selected === itemsFiltered.length - 1) {
       document.getElementById('nextMsg').className += " disabled";
     } else {
       document.getElementById('nextMsg').onclick = function(event) {
         event.preventDefault();
 
-        PH.state.inbox.selected += 1;
+        PH.state[PH.state.section].selected += 1;
         render();
       };
     }
