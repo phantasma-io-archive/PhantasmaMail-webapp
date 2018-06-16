@@ -2,31 +2,10 @@ var $ = require("jquery");
 neonJs = require('@cityofzion/neon-js');
 Neon = neonJs.default;
 
-var demoSender = {
-                   name: 'Saturn Moshi',
-                   address: Math.random().toString(16).substring(2)
-                 };
-
-var dummyContent = [
-  {
-    title: 'Abstract',
-    time: 1525623012,
-    body: "A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending. We propose a solution to the double-spending problem using a peer-to-peer network. The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers.<br/><br/>Cheers,<br/>PH Dev",
-    from: demoSender.address,
-    from_name: demoSender.name,
-    to: 'xxx'
-  },
-  {
-    title: 'Introduction',
-    time: 1525623012,
-    body: "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes. The cost of mediation increases transaction costs, limiting the minimum practical transaction size and cutting off the possibility for small casual transactions, and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible services. With the possibility of reversal, the need for trust spreads. Merchants must be wary of their customers, hassling them for more information than they would otherwise need. A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties can be avoided in person by using physical currency, but no mechanism exists to make payments over a communications channel without a trusted party.",
-    from: demoSender.address,
-    from_name: demoSender.name,
-    to: 'xxx'
-  }
-  ];
-
 window.PH = {
+  version: 'w1',
+  // https://github.com/PhantasmaProtocol/PhantasmaNeo/blob/version2/PhantasmaContract/Contract.cs
+  contractScriptHash: 'ed07cffad18f1308db51920d99a2af60ac66a7b3',
   state: {
     mainWallet: -1,
     wallets: [],
@@ -101,15 +80,26 @@ window.PH = {
   },
 
   itemsFiltered: function() {
-    var filter = PH.state.inbox.filter.toLowerCase();
-    if (filter.length === 0) { return PH.state.inbox.items; }
+    var items = PH.state.inbox.items.sort(function(a, b) {
+      try {
+        return b.date.localeCompare(a.date);
+      } catch(e) {
+        return 0;
+      }
+    });
 
-    return PH.state.inbox.items.filter(function(item) {
-      return item.title.toLowerCase().indexOf(filter) !== -1 ||
-             item.body.toLowerCase().indexOf(filter) !== -1 ||
-             item.from.toLowerCase().indexOf(filter) !== -1 ||
-             item.from_name.toLowerCase().indexOf(filter) !== -1 ||
-             item.to.toLowerCase().indexOf(filter) !== -1;
+    var filter = PH.state.inbox.filter.toLowerCase();
+    if (filter.length === 0) {
+      return items;
+    }
+
+    return items.filter(function(item) {
+      return item.subject.toLowerCase().indexOf(filter) !== -1 ||
+             item.content.toLowerCase().indexOf(filter) !== -1 ||
+             item.fromAddress.toLowerCase().indexOf(filter) !== -1 ||
+             item.fromInbox.toLowerCase().indexOf(filter) !== -1 ||
+             item.toAddress.toLowerCase().indexOf(filter) !== -1 ||
+             item.toInbox.toLowerCase().indexOf(filter) !== -1;
     });
   },
 
@@ -118,9 +108,6 @@ window.PH = {
   },
 
   contract: {
-    // See https://github.com/PhantasmaProtocol/PhantasmaNeo/blob/version2/PhantasmaContract/Contract.cs
-    scriptHash: 'ed07cffad18f1308db51920d99a2af60ac66a7b3',
-
     // Start of test functions:
     tranferGas: function(destAddress, gasAmount /* float */, callback) {
       var intent = neonJs.api.makeIntent({ GAS: gasAmount }, destAddress);
@@ -133,8 +120,6 @@ window.PH = {
 
       Neon.sendAsset(config)
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(res);
         }
@@ -152,8 +137,6 @@ window.PH = {
 
       Neon.sendAsset(config)
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(res);
         }
@@ -168,8 +151,6 @@ window.PH = {
 
       Neon.claimGas(config)
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(res);
         }
@@ -177,18 +158,16 @@ window.PH = {
     },
 
     getName: function(callback) {
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'name',
         args: []
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(Neon.u.hexstring2str(res.result.stack[0].value));
         }
@@ -196,7 +175,7 @@ window.PH = {
     },
 
     getNameDecimalsSymbolSupply: function(callback) {
-      var scriptHash = PH.contract.scriptHash;
+      var scriptHash = PH.contractScriptHash;
 
       var getName = { scriptHash, operation: 'name', args: [] };
       var getDecimals = { scriptHash, operation: 'decimals', args: [] };
@@ -207,8 +186,6 @@ window.PH = {
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback([
             Neon.u.hexstring2str(res.result.stack[0].value),
@@ -221,20 +198,18 @@ window.PH = {
     },
 
     validateAddress: function(address, callback) {
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'validateAddress',
         args: [
           neonJs.sc.ContractParam.byteArray(address, 'address')
         ]
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(res.result.stack[0].value == '1');
         }
@@ -244,20 +219,18 @@ window.PH = {
     validateMailboxName: function(callback) {
       var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
 
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'validateMailboxName',
         args: [
           neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string'),
         ]
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           callback(Neon.u.hexstring2str(res.result.stack[0].value));
         }
@@ -269,7 +242,7 @@ window.PH = {
       var config = {
         net: 'MainNet',
         script: Neon.create.script({
-          scriptHash: PH.contract.scriptHash,
+          scriptHash: PH.contractScriptHash,
           operation: 'registerMailbox',
           args: [
             neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
@@ -293,15 +266,15 @@ window.PH = {
     },
 
     getMailboxFromAddress: function(callback) {
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'getMailboxFromAddress',
         args: [
           neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
         ]
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
@@ -319,27 +292,26 @@ window.PH = {
       });
     },
 
-    getAddressFromMailbox: function(callback) {
-      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
-
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+    getAddressFromMailbox: function(friendlyName, callback) {
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'getAddressFromMailbox',
         args: [
           neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string')
         ]
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
+          // TODO: currently not working, return of getAddressFromMailbox is nonsensical
+          return callback('N/A');
+
           var ret = null;
           try {
-            ret = Neon.u.str2ab(res.result.stack[0].value);
+            ret = res.result.stack[0].value;
             if (ret.length === 0) {
               ret = null;
             }
@@ -353,24 +325,25 @@ window.PH = {
     getInboxCount: function(callback) {
       var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
 
-      var props = {
-        scriptHash: PH.contract.scriptHash,
+      var config = {
+        scriptHash: PH.contractScriptHash,
         operation: 'getInboxCount',
         args: [
           neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string')
         ]
       };
 
-      var script = Neon.create.script(props);
+      var script = Neon.create.script(config);
 
       neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
       .then(res => {
-        console.log(res);
-
         if (callback) {
           var ret = 0;
           try {
             ret = parseInt(res.result.stack[0].value);
+            if (isNaN(ret) || ret < 0) {
+              ret = 0;
+            }
           } catch(e) {}
 
           callback(ret);
@@ -378,56 +351,99 @@ window.PH = {
       });
     },
 
-    sendMessage: function(destFriendlyName, message, callback) {
+    getInboxContent: function(number, callback) {
+      var friendlyName = PH.state.wallets[PH.state.mainWallet].name;
+
       var config = {
-        net: 'MainNet',
-        script: Neon.create.script({
-          scriptHash: PH.contract.scriptHash,
-          operation: 'sendMessage',
-          args: [
-            neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
-            neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(destFriendlyName), 'string'),
-            neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(btoa(message)), 'string'),
-          ]
-        }),
-        account: PH.neoWallet,
-        gas: 0
-      }
+        scriptHash: PH.contractScriptHash,
+        operation: 'getInboxContent',
+        args: [
+          neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(friendlyName), 'string'),
+          neonJs.sc.ContractParam.integer(number + 1)
+        ]
+      };
 
-      Neon.doInvoke(config).then(res => {
-        console.log(res)
+      var script = Neon.create.script(config);
 
+      neonJs.rpc.Query.invokeScript(script, false).execute('http://seed1.cityofzion.io:8080')
+      .then(res => {
         if (callback) {
-          callback(res);
+          var ret = null;
+          try {
+            ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+            if (ret.constructor != Object) {
+              ret = null;
+            }
+          } catch(e) {}
+
+          if (!ret) {
+            ret = {
+              subject: 'ERROR',
+              date: '2018-01-01T10:10:10.203Z',
+              content: 'ERROR',
+              fromAddress: 'ERROR',
+              fromInbox: 'ERROR',
+              toAddress: PH.neoWallet.address,
+              toInbox: friendlyName
+            };
+          }
+
+          callback(ret);
         }
       });
     },
 
+    sendMessage: function(subject, content, toInbox, callback) {
+      PH.contract.getAddressFromMailbox(toInbox, function(toAddress) {
+        if (toAddress) {
+          var dat = {
+                      subject: subject,
+                      date: new Date().toISOString(),
+                      content: content,
+                      fromAddress: PH.neoWallet.address,
+                      fromInbox: PH.state.wallets[PH.state.mainWallet].name,
+                      toAddress: toAddress,
+                      toInbox: toInbox,
+                      v: PH.version
+                    };
 
+          var message = JSON.stringify(dat);
 
+          var config = {
+            net: 'MainNet',
+            script: Neon.create.script({
+              scriptHash: PH.contractScriptHash,
+              operation: 'sendMessage',
+              args: [
+                neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+                neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(toInbox), 'string'),
+                neonJs.sc.ContractParam.byteArray(Neon.u.str2hexstring(btoa(message)), 'string'),
+              ]
+            }),
+            account: PH.neoWallet,
+            gas: 0
+          }
 
-    // TODO: not working yet
-    getMailContent: function(index, callback) {
-      // TODO:
+          Neon.doInvoke(config).then(res => {
+            if (callback) {
+              var result = false;
+              try {
+                result = res.response.result && res.response.txid.length > 0;
+              } catch(e) {}
 
-      if (callback) {
-        // TODO
-        return callback(dummyContent[index]);
-      }
+              callback(result);
+            }
+          });
+        } else {
+          console.warn('Could not resolve address for mailbox ' + toInbox);
+        }
+      });
     },
 
-    // TODO: not working yet
-    sendMessage: function(recipient, message, callback) {
-      // TODO
-      if (callback) {
-        callback();
-      }
-    },
-
-    // TODO: not working yet
     fetchInbox: function(callback) {
-      //PH.contract.getMailCount(function(count) {
-      (function() {
+      PH.contract.getInboxCount(function(count) {
+        console.log('Found ' + count + ' messages');
+
         recursiveInboxFetch = function(acc1, index1, count1, callback1) {
           if (count1 === index1) {
             // Finished
@@ -439,14 +455,16 @@ window.PH = {
             return;
           }
 
-          PH.contract.getMailContent(index1, function(content) {
+          console.log('Fetching message #' + (index1 + 1));
+          PH.contract.getInboxContent(index1, function(content) {
             acc1.push(content);
+
             recursiveInboxFetch(acc1, index1 + 1, count1, callback1);
           });
         };
+
         recursiveInboxFetch([], 0, count, callback);
-      })();
-//      });
+      });
     }
   }
 };

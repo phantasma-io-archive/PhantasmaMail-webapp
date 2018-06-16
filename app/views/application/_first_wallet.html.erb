@@ -10,7 +10,6 @@ if (PH.state.wallets.length === 0) {
 
       var data = {
                    name: '',
-                   address: wallet.getPublicKey(),
                    privateKey: walletPrivKey
                  };
 
@@ -38,8 +37,7 @@ if (PH.state.wallets.length === 0) {
     document.getElementById('alert-area2').style.display = 'none';
 
     try {
-      var friendlyName = document.getElementById('friendly_name').value;
-      PH.state.wallets[PH.state.mainWallet].name = friendlyName;
+      var friendlyName = document.getElementById('friendly_name').value.slice(0, 40);
 
       PH.contract.registerMailbox(friendlyName, function(res) {
         PH.state.wallets[PH.state.mainWallet].name = friendlyName;
@@ -73,7 +71,7 @@ if (PH.state.wallets.length === 0) {
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="addWallet(event)" class="btn btn-primary">Check for Phantasma mailbox</button>
+        <button type="button" onclick="addWallet(event)" class="btn btn-primary">Find mailbox</button>
       </div>
     </div>
   </div>
@@ -94,12 +92,12 @@ if (PH.state.wallets.length === 0) {
         <form>
           <div class="form-group">
             <label for="friendly_name" class="control-label">Mailbox name</label>
-            <input type="text" class="form-control" id="friendly_name" name="friendly_name" placeholder="John Doe" autocomplete="off" />
+            <input type="text" required class="form-control" id="friendly_name" name="friendly_name" placeholder="John Doe" autocomplete="off" />
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="registerWallet(event)" class="btn btn-primary">Add</button>
+        <button type="button" onclick="registerWallet(event)" class="btn btn-primary">Register name</button>
       </div>
     </div>
   </div>

@@ -385,6 +385,13 @@ body.main2 {
     background-color: white;
     box-shadow: 4px 0px 10px #EBEFF0;
     overflow-y: scroll;
+
+    #version-text {
+      font-size: small;
+      color: #ddd;
+      margin: 0.5rem;
+      text-align: center;
+    }
   }
 
   .mail-center {
@@ -500,6 +507,7 @@ body.main2 {
       background-color: white;
       margin-top: 0;
       padding: 1rem 1.5rem;
+      min-height: 100%;
 
       .controls {
         font-size: larger;

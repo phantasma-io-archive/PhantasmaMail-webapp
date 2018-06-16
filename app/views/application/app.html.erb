@@ -51,6 +51,8 @@
           <div class="sidebar-item">
             <a id="forgetMeBtn" href="#"><i class="fa fa-sign-out"></i>Forget me</a>
           </div>
+
+          <div id="version-text"></div>
         </div>
 
         <div class="col-md mail-center">
@@ -151,8 +153,8 @@ window.render = function() {
   var itemsFiltered = PH.itemsFiltered();
   for (var i = 0; i < itemsFiltered.length; ++i) {
     var elem = itemsFiltered[i];
-    var timeStr = new Date(elem.time * 1000).toLocaleDateString();
-    content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.title) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.body, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.from_name) + '</b></span><span class="address">' + PH.trunc(elem.from) + '</span></span><span class="pull-right address">' + PH.trunc(elem.to) + '</span></div></div>';
+    var timeStr = new Date(elem.date).toLocaleDateString();
+    content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.subject) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.content, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.fromInbox) + '</b></span><span class="address"></span></span><span class="pull-right address">' + PH.trunc(elem.toInbox) + '</span></div></div>';
   }
   var container = document.getElementsByClassName('message-list')[0];
   container.innerHTML = content;
@@ -170,6 +172,8 @@ window.render = function() {
       render();
     }.bind(i);
   }
+
+  document.getElementById('version-text').innerHTML = 'v.' + PH.version;
 
   // Center pane - mail search
   document.getElementById('mail-search').value = PH.state.inbox.filter;
@@ -233,7 +237,7 @@ window.render = function() {
     var content = "";
     var message = itemsFiltered[PH.state.inbox.selected];
 
-    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.time + '</div><div class="people">' + message.from + ' <span class="ligature">to</span> ' + message.to + '</div><div class="title">' + message.title + '</div><div class="body">' + message.body + '</div></div>';
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.date + '</div><div class="people">' + message.fromInbox + ' <span class="ligature">to</span> ' + message.toInbox + '</div><div class="title">' + message.subject + '</div><div class="body">' + message.content + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows
