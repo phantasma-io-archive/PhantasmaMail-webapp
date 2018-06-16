@@ -1,16 +1,15 @@
 <script>
 if (PH.state.wallets.length === 0) {
   addWallet = function(event) {
-    document.getElementById('alert-area').style.display = 'none';
+    document.getElementById('alert-area1').style.display = 'none';
 
     try {
       var walletPrivKey = document.getElementById('wallet_priv_key').value;
-      var friendlyName = document.getElementById('friendly_name').value;
 
       var wallet = Neon.create.account(walletPrivKey);
 
       var data = {
-                   name: friendlyName || 'My first wallet',
+                   name: '',
                    address: wallet.getPublicKey(),
                    privateKey: walletPrivKey
                  };
@@ -20,46 +19,87 @@ if (PH.state.wallets.length === 0) {
       PH.state.mainWallet = PH.state.wallets.length - 1;
 
       window.render();
-      $("#firstWallet").modal('hide');
+      $("#firstWalletS1").modal('hide');
 
-      PH.contract.registerMailbox(friendlyName, function() {
-        PH.contract.fetchInbox(function() {
-          render(); // rerender what is needed
-        });
+      PH.contract.getMailboxFromAddress(function(name) {
+        if (name && name.length > 0) {
+          PH.state.wallets[PH.state.mainWallet].name = name;
+          window.render();
+        } else {
+          $('#firstWalletS2').modal({ backdrop: 'static', keyboard: false });
+        }
       });
     } catch (e) {
-      document.getElementById('alert-area').style.display = 'block';
+      document.getElementById('alert-area1').style.display = 'block';
     }
-  }
+  };
+
+  registerWallet = function(event) {
+    document.getElementById('alert-area2').style.display = 'none';
+
+    try {
+      var friendlyName = document.getElementById('friendly_name').value;
+      PH.state.wallets[PH.state.mainWallet].name = friendlyName;
+
+      PH.contract.registerMailbox(friendlyName, function(res) {
+        PH.state.wallets[PH.state.mainWallet].name = friendlyName;
+        $("#firstWalletS2").modal('hide');
+        window.render();
+      });
+    } catch (e) {
+      document.getElementById('alert-area2').style.display = 'block';
+    }
+  };
 }
 </script>
 
-<div class="modal fade" id="firstWallet" tabindex="-1" role="dialog" aria-labelledby="firstWalletLabel" aria-hidden="true">
+<div class="modal fade" id="firstWalletS1" tabindex="-1" role="dialog" aria-labelledby="firstWalletS1Label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="firstWalletLabel">First Phantasma wallet</h5>
+        <h5 class="modal-title" id="firstWalletS1Label">First Phantasma wallet</h5>
 
-        <div class="alert alert-danger" role="alert" id="alert-area" style="display: none">
-          The wallet check failed. Please check your address and try again.
+        <div class="alert alert-danger" role="alert" id="alert-area1" style="display: none">
+          The private key was not valid.
         </div>
       </div>
 
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="wallet_priv_key" class="control-label">Private key (hex-format, 64 characters)</label>
+            <label for="wallet_priv_key" class="control-label">NEO Private key (hex-format, 64 characters)</label>
             <input type="password" required class="form-control select2-offscreen" id="wallet_priv_key" name="wallet_priv_key" placeholder="Private key" autocomplete="off" value="<%= ENV['DEFAULT_TESTING_ADDRESS'] %>" />
-          </div>
-
-          <div class="form-group">
-            <label for="friendly_name" class="control-label">Friendly name (optional)</label>
-            <input type="text" class="form-control" id="friendly_name" name="friendly_name" placeholder="My first wallet" autocomplete="off" />
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="addWallet(event)" class="btn btn-primary">Add</button>
+        <button type="button" onclick="addWallet(event)" class="btn btn-primary">Check for Phantasma mailbox</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="firstWalletS2" tabindex="-1" role="dialog" aria-labelledby="firstWalletS2Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="firstWalletS2Label">First Phantasma wallet</h5>
+
+        <div class="alert alert-danger" role="alert" id="alert-area2" style="display: none">
+          The wallet registration failed. Please try with another name.
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="friendly_name" class="control-label">Mailbox name</label>
+            <input type="text" class="form-control" id="friendly_name" name="friendly_name" placeholder="John Doe" autocomplete="off" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="registerWallet(event)" class="btn btn-primary">Add</button>
       </div>
     </div>
   </div>
@@ -67,10 +107,14 @@ if (PH.state.wallets.length === 0) {
 
 <script>
 PH.afterLoad(function() {
-  document.getElementById('alert-area').style.display = 'none';
+  document.getElementById('alert-area1').style.display = 'none';
 
   if (PH.state.wallets.length === 0) {
-      $('#firstWallet').modal({ backdrop: 'static', keyboard: false });
+      $('#firstWalletS1').modal({ backdrop: 'static', keyboard: false });
+  } else {
+    if (!PH.state.wallets[PH.state.mainWallet] || PH.state.wallets[PH.state.mainWallet].length === 0) {
+      $('#firstWalletS2').modal({ backdrop: 'static', keyboard: false });
+    }
   }
 });
 </script>
