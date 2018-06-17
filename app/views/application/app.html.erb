@@ -249,9 +249,9 @@ window.render = function() {
     var rightPane = document.getElementsByClassName('mail-right')[0];
     rightPane.style.display = null;
     var content = "";
-    var message = itemsFiltered[PH.state[PH.state.section].selected];
+    var item = itemsFiltered[PH.state[PH.state.section].selected];
 
-    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><div onclick="alert(\'TODO\')" class="pull-right options"><i class="fa fa-ellipsis-v"></i></div></div><div class="relative-date">' + message.date + '</div><div class="people">' + message.fromInbox + ' <span class="ligature">to</span> ' + message.toInbox + '</div><div class="title">' + message.subject + '</div><div class="body">' + message.content + '</div></div>';
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><a href="#" onclick="event.preventDefault();PH.contract.deleteMessage(' + item.idx + ', autoFetchItems)" class="pull-right"><i class="fa fa-trash"></i></a></div><div class="relative-date">' + item.date + '</div><div class="people">' + item.fromInbox + ' <span class="ligature">to</span> ' + item.toInbox + '</div><div class="title">' + item.subject + '</div><div class="body">' + item.content + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows

@@ -268,7 +268,7 @@ window.PH = {
 
           optCallback(result);
         }
-      })
+      });
     },
 
     getMailboxFromAddress: function(callback) {
@@ -525,6 +525,7 @@ window.PH = {
 
           console.log('Fetching received message #' + (index1 + 1));
           PH.contract.getInboxContent(index1, function(content) {
+            content['idx'] = index1;
             acc1.push(content);
 
             recursiveInboxFetch(acc1, index1 + 1, count1, callback1);
@@ -552,6 +553,7 @@ window.PH = {
 
           console.log('Fetching sent message #' + (index1 + 1));
           PH.contract.getOutboxContent(index1, function(content) {
+            content['idx'] = index1;
             acc1.push(content);
 
             recursiveOutboxFetch(acc1, index1 + 1, count1, callback1);
@@ -559,6 +561,64 @@ window.PH = {
         };
 
         recursiveOutboxFetch([], 0, count, callback);
+      });
+    },
+
+    removeInboxMessage: function(index, callback) {
+      console.log(index)
+      var config = {
+        net: 'MainNet',
+        script: Neon.create.script({
+          scriptHash: PH.contractScriptHash,
+          operation: 'removeInboxMessage',
+          args: [
+            neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+            neonJs.sc.ContractParam.integer(index)
+          ]
+        }),
+        account: PH.neoWallet,
+        gas: 0
+      }
+
+      Neon.doInvoke(config).then(res => {
+        console.log(res);
+        callback();
+      });
+    },
+
+    removeOutboxMessage: function(index, callback) {
+      console.log(index)
+      var config = {
+        net: 'MainNet',
+        script: Neon.create.script({
+          scriptHash: PH.contractScriptHash,
+          operation: 'removeOutboxMessage',
+          args: [
+            neonJs.sc.ContractParam.byteArray(PH.neoWallet.address, 'address'),
+            neonJs.sc.ContractParam.integer(index)
+          ]
+        }),
+        account: PH.neoWallet,
+        gas: 0
+      }
+
+      Neon.doInvoke(config).then(res => {
+        console.log(res);
+        callback();
+      });
+    },
+
+    deleteMessage: function(index, optCallback) {
+      if (!(PH.state.section === 'inbox' || PH.state.section === 'outbox')) {
+        console.warn('deleteCurrentMessage - invalid invocation - wrong section');
+        return;
+      }
+      var removeFunc = PH.state.section === 'inbox' ? PH.contract.removeInboxMessage : PH.contract.removeOutboxMessage;
+
+      removeFunc(index, function() {
+        if (optCallback) {
+          optCallback();
+        }
       });
     }
   }

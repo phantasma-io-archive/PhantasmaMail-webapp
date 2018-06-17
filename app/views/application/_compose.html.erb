@@ -46,11 +46,18 @@ PH.afterLoad(function() {
     var subject = document.getElementById('composeSubject').value;
     var message = document.getElementById('composeMessage').value;
 
-    PH.contract.sendMessage(recipient, message, recipient, function() {
+    PH.contract.sendMessage(recipient, message, recipient, function(result) {
       document.getElementById('composeCancelBtn').className = document.getElementById('composeCancelBtn').className.replace(' disabled', '');
       document.getElementById('composeSubmitBtn').className = document.getElementById('composeSubmitBtn').className.replace(' disabled', '');
 
       $("#compose").modal('hide');
+
+      if (result) {
+        PH.state.section = 'outbox';
+        autoFetchItems();
+      } else {
+        console.warn('Failed to send message');
+      }
     });
   };
 });
