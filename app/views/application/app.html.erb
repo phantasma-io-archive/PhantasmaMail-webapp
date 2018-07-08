@@ -259,15 +259,7 @@ window.render = function() {
     var content = "";
     var item = itemsFiltered[PH.state[PH.state.section].selected];
 
-    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div>
-	<a href="#" onclick="event.preventDefault();
-	PH.contract.deleteMessage(' + item.idx + ', autoFetchItems)"
-	class="pull-right"><i class="fa fa-trash"></i></a></div><div class="relative-date">'
-		+ item.date + '</div><div class="people">'
-		+ item.fromBox + ' <span class="ligature">to</span> '
-		+ item.toBox + '</div><div class="title">'
-		+ item.subj + '</div><div class="body">'
-		+ item.body + '</div></div>';
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><a href="#" onclick="event.preventDefault(); PH.contract.deleteMessage(' + item.idx + ', autoFetchItems)" class="pull-right"><i class="fa fa-trash"></i></a></div><div class="relative-date">' + item.date + '</div><div class="people">' + item.fromBox + ' <span class="ligature">to</span> ' + item.toBox + '</div><div class="title">' + item.subj + '</div><div class="body">' + item.body + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows
