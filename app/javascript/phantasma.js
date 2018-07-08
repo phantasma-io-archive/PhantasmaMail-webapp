@@ -378,8 +378,8 @@ window.PH = {
           console.warn('Malformed message');
 
           ret = {
-            txid : '',
-            key  : '',
+            txid: '',
+            key : '',
             subj: 'ERROR',
             date: '2018-01-01T10:10:10.203Z',
             body: 'ERROR',

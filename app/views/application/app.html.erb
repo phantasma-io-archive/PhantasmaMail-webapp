@@ -165,7 +165,7 @@ window.render = function() {
   for (var i = 0; i < itemsFiltered.length; ++i) {
     var elem = itemsFiltered[i];
     var timeStr = new Date(elem.date).toLocaleDateString();
-    content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.subject) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.content, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.fromInbox) + '</b></span><span class="address"></span></span><span class="pull-right address">' + PH.trunc(elem.toInbox) + '</span></div></div>';
+    content += '<div class="message"><div class="clearfix title"><span class="pull-left mail-title">' + PH.trunc(elem.subj) + '</span><span class="pull-right mail-date">' + timeStr + '</span></div><div class="body">' + PH.trunc(elem.body, 160) + '</div><div class="clearfix footer"><span class="pull-left name"><b>' + PH.trunc(elem.fromBox) + '</b></span><span class="address"></span></span><span class="pull-right address">' + PH.trunc(elem.toBox) + '</span></div></div>';
   }
   var container = document.getElementsByClassName('message-list')[0];
   container.innerHTML = content;
@@ -251,7 +251,7 @@ window.render = function() {
     var content = "";
     var item = itemsFiltered[PH.state[PH.state.section].selected];
 
-    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><a href="#" onclick="event.preventDefault();PH.contract.deleteMessage(' + item.idx + ', autoFetchItems)" class="pull-right"><i class="fa fa-trash"></i></a></div><div class="relative-date">' + item.date + '</div><div class="people">' + item.fromInbox + ' <span class="ligature">to</span> ' + item.toInbox + '</div><div class="title">' + item.subject + '</div><div class="body">' + item.content + '</div></div>';
+    var content = '<div class="pane"><div class="clearfix controls"><div class="pull-left mail-nav"><i class="fa fa-arrow-left msgNav" id="prevMsg"></i><i class="fa fa-arrow-right msgNav" id="nextMsg" style="margin-left: 1rem;"></i></div><a href="#" onclick="event.preventDefault();PH.contract.deleteMessage(' + item.idx + ', autoFetchItems)" class="pull-right"><i class="fa fa-trash"></i></a></div><div class="relative-date">' + item.date + '</div><div class="people">' + item.fromBox + ' <span class="ligature">to</span> ' + item.toBox + '</div><div class="title">' + item.subj + '</div><div class="body">' + item.content + '</div></div>';
     rightPane.innerHTML = content;
 
     // Right pane - top nav arrows
