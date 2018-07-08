@@ -100,12 +100,12 @@ window.PH = {
     }
 
     return items.filter(function(item) {
-      return item.subject.toLowerCase().indexOf(filter) !== -1 ||
-             item.content.toLowerCase().indexOf(filter) !== -1 ||
-             item.fromAddress.toLowerCase().indexOf(filter) !== -1 ||
-             item.fromInbox.toLowerCase().indexOf(filter) !== -1 ||
-             item.toAddress.toLowerCase().indexOf(filter) !== -1 ||
-             item.toInbox.toLowerCase().indexOf(filter) !== -1;
+      return item.subj.toLowerCase().indexOf(filter) !== -1 ||
+             item.body.toLowerCase().indexOf(filter) !== -1 ||
+             item.fromAddr.toLowerCase().indexOf(filter) !== -1 ||
+             item.fromBox.toLowerCase().indexOf(filter) !== -1 ||
+             item.toAddr.toLowerCase().indexOf(filter) !== -1 ||
+             item.toBox.toLowerCase().indexOf(filter) !== -1;
     });
   },
 
@@ -378,13 +378,15 @@ window.PH = {
           console.warn('Malformed message');
 
           ret = {
-            subject: 'ERROR',
+            txid : '',
+            key  : '',
+            subj: 'ERROR',
             date: '2018-01-01T10:10:10.203Z',
-            content: 'ERROR',
-            fromAddress: 'ERROR',
-            fromInbox: 'ERROR',
-            toAddress: PH.neoWallet.address,
-            toInbox: friendlyName
+            body: 'ERROR',
+            fromAddr: 'ERROR',
+            fromBox: 'ERROR',
+            toAddr: PH.neoWallet.address,
+            toBox: friendlyName
           };
         }
 
@@ -447,13 +449,15 @@ window.PH = {
           console.warn('Malformed message');
 
           ret = {
-            subject: 'ERROR',
+			txid : '',
+			key  : '',
+            subj: 'ERROR',
             date: '2018-01-01T10:10:10.203Z',
-            content: 'ERROR',
-            fromAddress: 'ERROR',
-            fromInbox: 'ERROR',
-            toAddress: PH.neoWallet.address,
-            toInbox: friendlyName
+            body: 'ERROR',
+            fromAddr: 'ERROR',
+            fromBox: 'ERROR',
+            toAddr: PH.neoWallet.address,
+            toBox: friendlyName
           };
         }
 
@@ -465,14 +469,16 @@ window.PH = {
       PH.contract.getAddressFromMailbox(toInbox, function(toAddress) {
         if (toAddress) {
           var dat = {
-                      subject: subject,
+                      txid : '',
+                      key  : '',
+                      subj: subject,
                       date: new Date().toISOString(),
-                      content: content,
-                      fromAddress: PH.neoWallet.address,
-                      fromInbox: PH.state.wallets[PH.state.mainWallet].name,
-                      toAddress: toAddress,
-                      toInbox: toInbox,
-                      v: PH.version
+                      body: content,
+                      fromAddr: PH.neoWallet.address,
+                      fromBox: PH.state.wallets[PH.state.mainWallet].name,
+                      toAddr: toAddress,
+                      toBox: toInbox
+                      // v: PH.version
                     };
 
           var message = JSON.stringify(dat);
