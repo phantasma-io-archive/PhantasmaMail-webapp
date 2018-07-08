@@ -75,6 +75,10 @@ window.PH = {
     }
   },
 
+  validMessage: function (msg) {
+	return msg.body && msg.subj && msg.toBox && msg.toAddr && msg.fromBox && msg.fromAddr;
+  },
+
   trunc: function(str, length) {
     if (!length) {
       length = 24;
@@ -368,7 +372,7 @@ window.PH = {
       .then(res => {
         var ret = null;
         try {
-          ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+          ret = JSON.parse((Neon.u.hexstring2str(res.result.stack[0].value)));
           if (ret.constructor != Object) {
             ret = null;
           }
@@ -439,7 +443,7 @@ window.PH = {
       .then(res => {
         var ret = null;
         try {
-          ret = JSON.parse(atob(Neon.u.hexstring2str(res.result.stack[0].value)));
+          ret = JSON.parse((Neon.u.hexstring2str(res.result.stack[0].value)));
           if (ret.constructor != Object) {
             ret = null;
           }
